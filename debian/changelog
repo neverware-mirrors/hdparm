@@ -1,3 +1,87 @@
+hdparm (5.8-1ubuntu4) hoary; urgency=low
+
+  * Force the /etc/dev.d/block/hdparm.dev script to be executable
+    if upgrading from a version older than this one.  dpkg won't
+    touch the mode on this file.
+
+ -- Jeff Bailey <jbailey@ubuntu.com>  Mon, 21 Mar 2005 07:15:54 -0500
+
+hdparm (5.8-1ubuntu3) hoary; urgency=low
+
+  * ensure that the hdparm dev script is +x (Ubuntu: #7829)
+
+ -- Thom May <thom@planetarytramp.net>  Sat, 19 Mar 2005 22:46:43 +0000
+
+hdparm (5.8-1ubuntu2) hoary; urgency=low
+
+  * Add udev script to run hdparm on newly created devices. (Ubuntu: #4356)
+
+ -- Thom May <thom@ubuntu.com>  Mon,  7 Feb 2005 12:50:01 +0000
+
+hdparm (5.8-1ubuntu1) hoary; urgency=low
+
+  * Resynchronise with Debian.
+
+ -- Scott James Remnant <scott@canonical.com>  Sat, 27 Nov 2004 12:47:14 +0000
+
+hdparm (5.8-1) unstable; urgency=low
+
+  * New Upstream version
+    - -h output now goes to stdout rather than stderr
+      (closes: #270510)
+  * Mention config file in manpage (closes: #272641)
+
+ -- Stephen Gran <sgran@debian.org>  Fri, 26 Nov 2004 11:57:13 -0500
+
+hdparm (5.7-1ubuntu1) hoary; urgency=low
+
+  * Resynchronise with Debian.
+
+ -- Thom May <thom@canonical.com>  Wed, 27 Oct 2004 21:40:43 +0100
+
+hdparm (5.7-1) unstable; urgency=low
+
+  * New upstream release
+    - fixes endian problems (segfault with -i) (closes: #268725)
+  * Stop shipping empty rcS.d (why did I do that?) (closes: #270377)
+
+ -- Stephen Gran <sgran@debian.org>  Sun, 12 Sep 2004 14:00:36 -0400
+
+hdparm (5.6-0.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * New upstream release, blessed by Stephen Gran, original maintainer. This
+    new version allows to set up parameters on IDE disks supported by the new
+    libata kernel interface, that sees them as SCSI disks. hdparm prior to 5.6
+    refuse to set up parameters on SCSI disks (closes: #266903).
+
+ -- David Martínez Moreno <ender@debian.org>  Fri, 20 Aug 2004 16:05:19 +0200
+
+hdparm (5.5-7) unstable; urgency=low
+
+  * Get rid of .commands in source 
+
+ -- Stephen Gran <sgran@debian.org>  Tue, 17 Aug 2004 12:14:24 -0400
+
+hdparm (5.5-6) unstable; urgency=low
+
+  * The God, I hate when I do that release
+  * Revert some changes that are destined for an unfinished feature, and would
+    just break things now.
+
+ -- Stephen Gran <sgran@debian.org>  Tue, 17 Aug 2004 12:08:41 -0400
+
+hdparm (5.5-5) unstable; urgency=low
+
+  * New conf file option -p (Thanks Sebastian Kuzminsky <seb@kernel.org>)
+  * conf file also now allows for straight command line syntax - read
+    comments in hdparm.conf for details
+  * Add watch file
+  * Add udeb (closes: #265969) (Thanks Colin Watson <cjwatson@debian.org> for
+    patch)
+
+ -- Stephen Gran <sgran@debian.org>  Sun, 15 Aug 2004 22:48:29 -0400
+
 hdparm (5.5-4ubuntu3) warty; urgency=low
 
   * Added versioned depend on lsb-base

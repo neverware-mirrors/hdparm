@@ -18,6 +18,7 @@
 # 02111-1307 USA.
 
 DEB_DH_INSTALLINIT_ARGS := '--no-start'
+#DEB_DH_LINK_ARGS := ../init.d/hdparm /etc/rcS.d/S07hdparm.first
 DEB_UPDATE_RCD_PARAMS := 'start 07 S . stop 75 0 6 . '
 DEB_FIXPERMS_EXCLUDE:= 20hdparm
 
@@ -28,3 +29,7 @@ DEB_MAKE_INSTALL_TARGET := install DESTDIR=$(CURDIR)/debian/tmp
 
 common-install-prehook-arch::
 	install -d $(CURDIR)/debian/tmp/sbin
+
+common-binary-post-install-arch::
+	install -d $(CURDIR)/debian/hdparm/etc/dev.d/block
+	install -m 755 debian/hdparm.dev $(CURDIR)/debian/hdparm/etc/dev.d/block/
