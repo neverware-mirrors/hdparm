@@ -1,25 +1,20 @@
 #!/bin/sh
 
-set -e
-
 . /lib/lsb/init-functions
 . /etc/default/rcS
 
-case $1 in
-  start|restart|reload|force-reload)
-    ;;
-  stop) 
-    exit 0
-    ;;
-  *)
-    log_success_msg "Usage: $0 {stop|start|restart|reload|force-reload}"
-    exit 1
-    ;;
-esac
+
+set -e
 
 if grep -w -q "nohdparm" /proc/cmdline ; then
-  log_success_msg "Skipping setup of disc parameters as specified..."
   exit 0
+fi
+
+# sanity check
+[ "$DEVNAME" != "${DEVNAME#/}" ] || exit 0
+
+if [ "$ACTION" != add ]; then
+        exit 0
 fi
 
 raidstat=OK
@@ -32,13 +27,11 @@ elif [ -e /proc/rd/status ]; then
 fi
 
 if ! [ "$raidstat" = 'OK' ]; then
-  log_warning_msg "RAID status not OK.  Exiting."
   exit 0
 fi
 
-log_begin_msg "Setting disc parameters..."
 
-DISC=
+DISC=$DEVNAME
 DEFAULT=
 OPTIONS=
 DEF_QUIET=
@@ -174,7 +167,6 @@ egrep -v '^[[:space:]]*(#|$)' /etc/hdparm.conf | while read KEY SEP VALUE; do
          })
 	   if [ -z "$DISC" ]; then
              if [ "$WAS_RUN" != 1 ]; then
-	       log_failure_msg "No disk enabled. Exiting..."
 	       exit 1
              fi
 	   fi
@@ -183,7 +175,6 @@ egrep -v '^[[:space:]]*(#|$)' /etc/hdparm.conf | while read KEY SEP VALUE; do
 	     /sbin/hdparm -q -f $DISC
 
 	     /sbin/hdparm $OPTIONS $DISC
-	     [ "$VERBOSE" != no ] && log_success_msg "Found enabled disk: $DISC"
 	   fi       
            ;;
          quiet)
@@ -203,13 +194,11 @@ egrep -v '^[[:space:]]*(#|$)' /etc/hdparm.conf | while read KEY SEP VALUE; do
            set_option -Z
 	   ;;
          *)
-	   log_failure_msg "Unknown option $KEY!"
 	   exit 1
 	   ;;
        esac
 	   ;;
    *)
-     log_failure_msg "Unknown separator $SEP!"
      exit 1
      ;;
   esac
@@ -220,4 +209,4 @@ else
 fi
 done
 
-log_end_msg 0
+exit 0

@@ -426,11 +426,7 @@ void identify (__u16 *id_supplied, const char *devname)
 	__u64 bb, bbbig; /* (:) */
 
 	if (id_supplied) {
-#if __BYTE_ORDER == __BIG_ENDIAN
-		swab(id_supplied, val, sizeof(val));
-#else
 		memcpy(val, id_supplied, sizeof(val));
-#endif
 	} else {
 		id_file = calloc(1, strlen(devname)+1+strlen(fmt));
 		sprintf(id_file, fmt, devname);
@@ -473,7 +469,7 @@ void identify (__u16 *id_supplied, const char *devname)
 		like_std = 3;
 	} else {
 		printf("Unknown device type:\n\tbits 15&14 of general configuration word 0 both set to 1.\n");
-		exit(0);
+		exit(EINVAL);
 	}
 	if(!(val[GEN_CONFIG] & MEDIA_REMOVABLE))
 		printf("non-");
@@ -681,15 +677,15 @@ void identify (__u16 *id_supplied, const char *devname)
 				        (__u64)val[LBA_48_MSB] << 32 |
 				        (__u64)val[LBA_MID] << 16 | 
 					val[LBA_LSB] ;
-				printf("\tLBA48  user addressable sectors:%11llu\n",bbbig);
+				printf("\tLBA48  user addressable sectors:%11llu\n", (unsigned long long)bbbig);
 			}
 		}
 		if (!bbbig) bbbig = (__u64)(ll>mm ? ll : mm); /* # 512 byte blocks */
 		if (!bbbig) bbbig = bb;
-		printf("\tdevice size with M = 1024*1024: %11llu MBytes\n",bbbig>>11);
+		printf("\tdevice size with M = 1024*1024: %11llu MBytes\n", (unsigned long long)(bbbig>>11));
 		bbbig = (bbbig<<9)/1000000;
-		printf("\tdevice size with M = 1000*1000: %11llu MBytes ",bbbig);
-		if(bbbig > 1000) printf("(%llu GB)\n",bbbig/1000);
+		printf("\tdevice size with M = 1000*1000: %11llu MBytes ", (unsigned long long)bbbig);
+		if(bbbig > 1000) printf("(%llu GB)\n", (unsigned long long)(bbbig/1000));
 		else printf("\n");
 
 	}
@@ -951,8 +947,6 @@ void identify (__u16 *id_supplied, const char *devname)
 			printf("correct\n");
 		}
 	}
-
-	exit(0);
 }
 
 __u8 mode_loop(__u16 mode_sup, __u16 mode_sel, int cc, __u8 *have_mode) {
@@ -970,6 +964,7 @@ __u8 mode_loop(__u16 mode_sup, __u16 mode_sel, int cc, __u8 *have_mode) {
 	}
 	return err_dma;
 }
+
 void print_ascii(__u16 *p, __u8 length) {
 	__u8 ii;
 	char cl;
@@ -986,8 +981,12 @@ void print_ascii(__u16 *p, __u8 length) {
 	}
 	/* print the rest */
 	for(; ii< length; ii++) {
-		if(!(*p)) break; /* some older devices have NULLs */
-		printf("%c%c",(char)0x00ff&((*p)>>8),(char)(*p)&0x00ff);
+		unsigned char c;
+		/* some older devices have NULLs */
+		c = (*p) >> 8;
+		if (c) putchar(c);
+		c = (*p);
+		if (c) putchar(c);
 		p++;
 	}
 	printf("\n");

@@ -1,3 +1,22 @@
+hdparm-5.8
+	- added HDIO_SET_WCACHE support to -W
+	- fixed double byteswap for big endian
+	- fixed %lld warnings on 64-bit architectures
+	- "hdparm -h" now goes to stdout instead of stderr
+hdparm-5.7
+	- fixed output of NULs in -I string fields
+	- fixed big-endian -I crashes from 5.6
+	- removed remains of defunct major-number checks
+	- added support for BLKGETSIZE64 ioctl internally
+	- added --direct flag to use O_DIRECT on device open
+	- renamed -Istdin  to --Istdin
+	- renamed -Istdout to --Istdout
+	- allow other flags to follow any of: -I, --Istdin, --Istdout
+hdparm-5.6
+	- fixed reversed device names in idectl script
+	- renamed readahead variables to avoid new glibc conflicts
+	- added -Istdout flag to dump IDENTIFY data as hex
+	- removed MAJOR number checks to open up hdpar for SATA-SCSI drivers
 hdparm-5.5
 	- added limited support for SCSI(-controlled) CDROM/optical drives
 	- incorporated various -I clean-up patches from Maciej W. Rozycki

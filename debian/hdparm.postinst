@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -e
+
+# dpkg won't update permissions on a conffile, and the first upload had
+# this without execute bits on.
+if [ "$1" = configure ]; then
+	if [ -n "$2" ] && dpkg --compare-versions "$2" le 5.8-1ubuntu3; then
+		chmod +x /etc/dev.d/block/hdparm.dev
+	fi
+fi
+
+#DEBHELPER#
+
