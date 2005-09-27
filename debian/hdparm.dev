@@ -31,7 +31,7 @@ if ! [ "$raidstat" = 'OK' ]; then
 fi
 
 
-DISC=$DEVNAME
+DISC=
 DEFAULT=
 OPTIONS=
 DEF_QUIET=
@@ -170,7 +170,7 @@ egrep -v '^[[:space:]]*(#|$)' /etc/hdparm.conf | while read KEY SEP VALUE; do
 	       exit 1
              fi
 	   fi
-	   if [ -n "$OPTIONS" ]; then
+	   if [ "$DISC" = "$DEVNAME" ] && [ -n "$OPTIONS" ]; then
 	     # Flush the drive's internal write cache to the disk.
 	     /sbin/hdparm -q -f $DISC
 

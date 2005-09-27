@@ -5,6 +5,39 @@ set -e
 . /lib/lsb/init-functions
 . /etc/default/rcS
 
+#In certian cases you may wish to run this script twice.  Once at S07
+#and once later in the boot process. If you do this call /etc/init.d/hdparm
+#again from rcS.d with a name such as S27hdparm.second.
+#
+#See /usr/share/doc/hdparm/README.Debian for more details.
+
+case "$0" in
+  *hdparm)
+    FIRST=yes
+    ;;
+  *)
+    FIRST=no
+    ;;
+esac
+
+MYNAME="$0"
+
+report()
+{
+  echo "${MYNAME}: $*"
+}
+
+report_error()
+{
+  echo "${MYNAME}: Error: $*" >&2
+}
+
+report_error_and_exit()
+{
+  report_error "$*.  Exiting."
+  exit 1
+}
+
 case $1 in
   start|restart|reload|force-reload)
     ;;
@@ -44,7 +77,16 @@ OPTIONS=
 DEF_QUIET=
 OPT_QUIET=
 
-set_option() {
+#  set_option() adds $1 to the $OPTIONS list if in a disk stanza
+#             and adds $1 to the $DEFAULT list if not in a disk stanza
+#
+#  the block beginning:
+#        if test x${i%${i#??}} != x${1%${1#??}}; then
+#  checks to see if $1 is already in the list and
+#    if so removes the first instance
+
+set_option() 
+{
   if test -n "$DISC"; then
     NEW_OPT=
     for i in $OPTIONS; do
@@ -68,7 +110,8 @@ set_option() {
   fi
 }
 
-eval_value() {
+eval_value() 
+{
   case $1 in
     off|0) 
       set_option "$2"0
@@ -84,6 +127,17 @@ eval_value() {
 
 # Get blocks as far as the drive's write cache.
 /bin/sync
+
+# Set options for a group of disks in /etc/default/hdparm
+[ -e /etc/default/hdparm ] && . /etc/default/hdparm
+
+if [ -n "$harddisks" -a -n "$hdparm_opts" ]; then
+  for drive in $harddisks; do 
+    /sbin/hdparm -q -f $drive
+    hdparm -q $hdparm_opts -q $drive
+    [ "$VERBOSE" != no ] && log_success_msg "Found enabled disk: $drive"
+  done
+fi
 
 egrep -v '^[[:space:]]*(#|$)' /etc/hdparm.conf | while read KEY SEP VALUE; do
  if [ "$NEXT_LINE" != 'go' ]; then
