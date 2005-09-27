@@ -1,3 +1,78 @@
+hdparm (6.1-1ubuntu2) breezy; urgency=low
+
+  * Fix the hdparm.dev script to only execute hdparm for the block device
+    being created, rather than for every block device configured in the file.
+    This prevents an hdparm storm bringing down the machine.  (Ubuntu: #16433)
+
+ -- Scott James Remnant <scott@ubuntu.com>  Tue, 27 Sep 2005 21:00:19 +0100
+
+hdparm (6.1-1ubuntu1) breezy; urgency=low
+
+  * Resynchronise with Debian, resolving merge conflicts.
+
+ -- Adam Conrad <adconrad@0c3.net>  Thu, 21 Apr 2005 09:33:45 +0000
+
+hdparm (6.1-1) unstable; urgency=low
+
+  * New upstream version
+
+ -- Stephen Gran <sgran@debian.org>  Mon, 18 Apr 2005 14:40:21 -0400
+
+hdparm (6.0-1) unstable; urgency=low
+
+  * New upstream version
+    - Includes WIN_SECURITY_FREEZE_LOCK (closes: #302774)
+  * Allow multiple disks to be set up at once in /etc/default/hdparm
+    (closes: #296368)
+
+ -- Stephen Gran <sgran@debian.org>  Sat, 16 Apr 2005 12:36:14 -0400
+
+hdparm (5.9-4ubuntu1) breezy; urgency=low
+
+  * Resynchronise with Debian.
+
+ -- Michael Vogt <michael.vogt@ubuntu.com>  Fri, 15 Apr 2005 15:30:28 +0200
+
+hdparm (5.9-4) unstable; urgency=low
+
+  * Allow overriding of (rather simple minded) built-in safety checks
+    in init script (closes: #299330)
+  * Patch to output sectors instead of bytes on kernels that support
+    BLKGETSIZE64 (closes: #299109)
+  * Reorganize README.Debian, and better document the init script (hopefully)
+  * Add documentation to init script and conf file, and make indenting more
+    readable in init script (closes: #299440)
+
+ -- Stephen Gran <sgran@debian.org>  Mon, 14 Mar 2005 06:05:55 -0500
+
+hdparm (5.9-3) unstable; urgency=low
+
+  * Don't skip drives in hdparm.init if $ROOTFS is unset (closes: #296364)
+
+ -- Stephen Gran <sgran@debian.org>  Mon, 21 Feb 2005 22:11:40 -0500
+
+hdparm (5.9-2) unstable; urgency=low
+
+  * Readability fixup in hdparm.init (closes: #294761) (thanks Thomas Hood
+    <jdthood@aglu.demon.nl>)
+  * Test for existance of device before running hdparm on it.  This doesn't
+    really fix the problem of things like udev creating the device files so
+    slowly, but it allows the init script to run to completion, instead of
+    bailing due to set -e (closes: #249446)
+  * Set up the infrastructure for a 2 stage call at boot time.  Unfortunately,
+    the admin will have to do a little work themselves to configure this, but
+    doing it automagically appears impossible in all situations, so I will not
+    push it much further.  (closes: #250232, #290629)
+
+ -- Stephen Gran <sgran@debian.org>  Thu, 17 Feb 2005 22:00:33 -0500
+
+hdparm (5.9-1) unstable; urgency=low
+
+  * New upstream version
+    - fixes -W switch (closes: #293378)
+
+ -- Stephen Gran <sgran@debian.org>  Fri,  4 Feb 2005 08:56:57 -0500
+
 hdparm (5.8-1ubuntu4) hoary; urgency=low
 
   * Force the /etc/dev.d/block/hdparm.dev script to be executable
