@@ -1,3 +1,28 @@
+hdparm (6.1-7ubuntu2) dapper; urgency=low
+
+  * Fix incorrect syntax in hdparm.rules file.
+  * Install hdparm.rules as /etc/udev/rules.d/85-hdparm.rules to match
+    new udev packages; move file if customised in ubuntu1.
+
+ -- Scott James Remnant <scott@ubuntu.com>  Fri, 18 Nov 2005 10:03:15 +0000
+
+hdparm (6.1-7ubuntu1) dapper; urgency=low
+
+  * Resynchronise with Debian.
+    (Yes, really, me; not any of those imposters!)
+    - Kept versioned-dep on lsb-base.
+    - Kept include of /etc/default/rcS in hdparm.init as we check VERBOSE,
+      I'm not sure why Debian don't do that.
+    - Merge both sets of init script changes to roughly produce the same
+      effect, less logging than Debian but with combined init and hotplug
+      script.
+  * Dropped postrm and postinst, instead install hdparm.rules directly into
+    /etc/udev/rules.d, we have no need to mess about with symlinks.
+  * Dropped support for /etc/default/hdparm as it doesn't really work with
+    udev anyway, and there should only be one way to do things, damnit.
+
+ -- Scott James Remnant <scott@ubuntu.com>  Tue, 08 Nov 2005 07:20:28 +0000
+
 hdparm (6.1-1ubuntu2) breezy; urgency=low
 
   * Fix the hdparm.dev script to only execute hdparm for the block device
@@ -11,6 +36,57 @@ hdparm (6.1-1ubuntu1) breezy; urgency=low
   * Resynchronise with Debian, resolving merge conflicts.
 
  -- Adam Conrad <adconrad@0c3.net>  Thu, 21 Apr 2005 09:33:45 +0000
+
+hdparm (6.1-1) unstable; urgency=low
+
+  * New upstream version
+
+ -- Stephen Gran <sgran@debian.org>  Mon, 18 Apr 2005 14:40:21 -0400
+
+hdparm (6.1-7) unstable; urgency=low
+
+  * Make eval_value fail if unknown value passed to it (closes: #329443)
+  * Get rid of deprecated dev.d/ file (closes: #329450)
+  * Add /etc/udev/rules.d/ to package (closes: #329731)
+
+ -- Stephen Gran <sgran@debian.org>  Sat, 24 Sep 2005 01:03:51 +0100
+
+hdparm (6.1-6) unstable; urgency=low
+
+  * Migrate from dev.d to udev/hdparm.rules (closes: #329026)
+  * remerge manpage patch for -M (closes: #325237)
+
+ -- Stephen Gran <sgran@debian.org>  Mon, 19 Sep 2005 08:19:27 +0100
+
+hdparm (6.1-5) unstable; urgency=low
+
+  * Change udev script name to end in .dev (hmm, really should have
+    investigated that more) (closes: #322636)
+
+ -- Stephen Gran <sgran@debian.org>  Fri, 12 Aug 2005 08:56:00 -0400
+
+hdparm (6.1-4) unstable; urgency=low
+
+  * Grr, I _would_ have had a working solution, if only I actually installed
+    all the files.
+
+ -- Stephen Gran <sgran@debian.org>  Thu, 11 Aug 2005 09:57:28 -0400
+
+hdparm (6.1-3) unstable; urgency=low
+
+  * Finally, I think I have a working udev method (much thanks to Ubuntu for
+    doing rather a lot of the work getting it there)
+    (closes: #274109, #312949)
+  * security-freeze support for init script (closes: #317675)
+  * hdparm.conf manpage written and included (closes: #319928)
+
+ -- Stephen Gran <sgran@debian.org>  Wed, 10 Aug 2005 15:26:36 -0400
+
+hdparm (6.1-2) unstable; urgency=low
+
+  * Typo fixups in /etc/default/hdparm (closes: #310517)
+
+ -- Stephen Gran <sgran@debian.org>  Tue, 24 May 2005 10:08:42 -0400
 
 hdparm (6.1-1) unstable; urgency=low
 

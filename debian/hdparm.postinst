@@ -1,14 +1,22 @@
 #!/bin/sh
 
-set -e
+# Move a conffile without triggering a dpkg question
+mv_conffile() {
+    OLDCONFFILE="$1"
+    NEWCONFFILE="$2"
 
-# dpkg won't update permissions on a conffile, and the first upload had
-# this without execute bits on.
-if [ "$1" = configure ]; then
-	if [ -n "$2" ] && dpkg --compare-versions "$2" le 5.8-1ubuntu3; then
-		chmod +x /etc/dev.d/block/hdparm.dev
-	fi
-fi
+    if [ -e "$OLDCONFFILE" ]; then
+        echo "Preserving user changes to $NEWCONFFILE ..."
+        mv -f "$NEWCONFFILE" "$NEWCONFFILE".dpkg-new
+        mv -f "$OLDCONFFILE" "$NEWCONFFILE"
+    fi
+}
 
-#DEBHELPER#
-
+case "$1" in
+configure)
+  # Renamed within dapper release cycle, can be dropped once dapper is
+  # released or betad
+  if dpkg --compare-versions "$2" eq 6.1-7ubuntu1; then
+      mv_conffile "/etc/udev/rules.d/hdparm.rules" "/etc/udev/rules.d/60hdparm.rules"
+  fi
+esac
