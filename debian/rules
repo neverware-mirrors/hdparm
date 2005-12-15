@@ -19,9 +19,9 @@
 
 DEB_DH_INSTALLINIT_ARGS := '--no-start'
 #DEB_DH_LINK_ARGS := ../init.d/hdparm /etc/rcS.d/S07hdparm.first
-DEB_UPDATE_RCD_PARAMS := 'start 07 S . stop 75 0 6 . '
 DEB_FIXPERMS_EXCLUDE:= 20hdparm
 
+include /usr/share/cdbs/1/rules/dpatch.mk
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/makefile.mk
 
@@ -30,7 +30,7 @@ DEB_MAKE_INSTALL_TARGET := install DESTDIR=$(CURDIR)/debian/tmp
 common-install-prehook-arch::
 	install -d $(CURDIR)/debian/tmp/sbin
 common-binary-post-install-arch::
-	install -d $(CURDIR)/debian/hdparm/etc/udev/rules.d
 	install -m 644 $(CURDIR)/debian/hdparm.rules $(CURDIR)/debian/hdparm/etc/udev/rules.d/85-hdparm.rules
+	install -m 755 $(CURDIR)/debian/hdparm.udev $(CURDIR)/debian/hdparm/lib/udev/hdparm
 binary-predeb/hdparm::
 	chmod 755 $(CURDIR)/debian/hdparm/etc/apm/event.d/20hdparm
