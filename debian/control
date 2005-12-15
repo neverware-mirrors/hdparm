@@ -2,12 +2,12 @@ Source: hdparm
 Section: admin
 Priority: optional
 Maintainer: Stephen Gran <sgran@debian.org>
-Build-Depends: cdbs (>> 0.4.5), debhelper (>= 4.2)
+Build-Depends: cdbs (>> 0.4.5), debhelper (>= 4.2), dpatch
 Standards-Version: 3.6.2
 
 Package: hdparm
 Architecture: any
-Depends: ${shlibs:Depends}, lsb-base (>= 3.0-11ubuntu1)
+Depends: ${shlibs:Depends}
 Suggests: apmd
 Replaces: apmd (<= 3.0.2-1.15)
 Description: tune hard disk parameters for high performance
