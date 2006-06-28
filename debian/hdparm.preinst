@@ -19,33 +19,14 @@ rm_conffile()
   fi
 }
 
-# Prepare to move a conffile without triggering a dpkg question
-prep_mv_conffile() {
-    CONFFILE="$1"
-
-    if [ -e "$CONFFILE" ]; then
-        md5sum="`md5sum \"$CONFFILE\" | sed -e \"s/ .*//\"`"
-        old_md5sum="`sed -n -e \"/^Conffiles:/,/^[^ ]/{\\\\' $CONFFILE'{s/.* //;p}}\" /var/lib/dpkg/status`"
-        if [ "$md5sum" = "$old_md5sum" ]; then
-            rm -f "$CONFFILE"
-        fi
-    fi
-}
-
 if [ "$1" = install ] || [ "$1" = upgrade ]; then
   if dpkg --compare-versions "$2" lt 6.3-3ubuntu1; then
       rm_conffile /etc/init.d/hdparm
       update-rc.d -f hdparm remove >/dev/null 2>&1
   fi
 
-  # Renamed within dapper release cycle, can be dropped once dapper is
-  # released or betad
-  if dpkg --compare-versions "$2" eq 6.1-7ubuntu1; then
-      prep_mv_conffile "/etc/udev/rules.d/hdparm.rules"
-  fi
-
   if dpkg --compare-versions "$2" le 6.1-6; then
-    if dpkg --compare-versions "$2" gt 6.1-1; then
+    if dpkg --compare-versions "$2" gt 6.1-2; then
       for conffile in /etc/init.d/hdparm.dev /etc/default/hdparm /etc/dev.d/block/hdparm.block /etc/dev.d/block/hdparm.dev; do
         [ ! -e "$conffile" ] || rm_conffile "$conffile"
       done
