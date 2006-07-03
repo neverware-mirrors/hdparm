@@ -1,3 +1,10 @@
+hdparm (6.6-1ubuntu2) edgy; urgency=low
+
+  * Repair CDBS damage ... silently enabling features depending on the
+    filename of files that may have existed before is BAD, OKAY?
+
+ -- Scott James Remnant <scott@ubuntu.com>  Mon,  3 Jul 2006 23:03:13 +0100
+
 hdparm (6.6-1ubuntu1) edgy; urgency=low
 
   [ Ongoing Merge Process ]
