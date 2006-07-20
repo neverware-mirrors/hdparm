@@ -3,4 +3,9 @@
 # Clean up cdbs damage
 rm -f /etc/udev/rules.d/50-hdparm.rules
 
+
+if dpkg --compare-versions "$2" lt "6.6-1ubuntu3"; then
+	update-rc.d -f hdparm remove
+fi
+
 #DEBHELPER#

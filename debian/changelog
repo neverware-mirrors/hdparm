@@ -1,3 +1,9 @@
+hdparm (6.6-1ubuntu3) edgy; urgency=low
+
+  * Remove the init script again.
+
+ -- Scott James Remnant <scott@ubuntu.com>  Thu, 20 Jul 2006 23:33:21 +0100
+
 hdparm (6.6-1ubuntu2) edgy; urgency=low
 
   * Repair CDBS damage ... silently enabling features depending on the
