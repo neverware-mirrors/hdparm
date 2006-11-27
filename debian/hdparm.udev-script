@@ -12,7 +12,7 @@ fi
 
 raidstat=OK
 if [ -e /proc/mdstat ]; then
-  if grep -iq resync /proc/mdstat; then
+  if egrep -iq "resync|repair|recover|check" /proc/mdstat; then
     raidstat=RESYNC
   fi
 elif [ -e /proc/rd/status ]; then
@@ -139,6 +139,9 @@ egrep -v '^[[:space:]]*(#|$)' /etc/hdparm.conf |
               ;;
             spindown_time) 
               set_option -S$VALUE
+              ;;
+            poweron_standby) 
+              eval_value $VALUE -s
               ;;
             interrupt_unmask) 
               eval_value $VALUE -u

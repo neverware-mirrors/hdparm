@@ -1,3 +1,63 @@
+hdparm (6.9-1ubuntu1) feisty; urgency=low
+
+  * Merge from debian unstable, remaining changes:
+    - remove init script, install udev rules instead
+
+  * Update udev script from init script
+
+ -- Scott James Remnant <scott@ubuntu.com>  Mon, 27 Nov 2006 14:14:39 +0000
+
+hdparm (6.9-1) unstable; urgency=low
+
+  * New upstream version
+  * Add new -s option to init script, conf file, and manpage
+
+ -- Stephen Gran <sgran@debian.org>  Wed, 25 Oct 2006 16:24:22 +0100
+
+hdparm (6.8-1) unstable; urgency=low
+
+  * New upstream version
+
+ -- Stephen Gran <sgran@debian.org>  Mon, 16 Oct 2006 18:14:36 +0100
+
+hdparm (6.7-1) unstable; urgency=low
+
+  * New upstream version
+  * Fix override disparity for -dbg package
+  * Versioned Build-Dep on dpkg-dev since it now uses ${binary:Version}
+
+ -- Stephen Gran <sgran@debian.org>  Thu,  5 Oct 2006 22:37:59 +0100
+
+hdparm (6.6-5) unstable; urgency=low
+
+  * Make -C actually try a second time (closes: #390079)
+
+ -- Stephen Gran <sgran@debian.org>  Sat, 30 Sep 2006 15:08:01 +0100
+
+hdparm (6.6-4) unstable; urgency=low
+
+  * hdparm-dbg should Depend on hdparm, how about?
+
+ -- Stephen Gran <sgran@debian.org>  Thu, 28 Sep 2006 11:06:31 +0100
+
+hdparm (6.6-3) unstable; urgency=low
+
+  * s/mountvirtfs/mountdevsubfs/ in init script (closes: #386340)
+  * Some init dependency tuning
+  * Apply patch from Norbert Buchmuller <norbi.spam@nix.hu> to make it safer
+    to run hdparm on a degraded software raid array (closes: #366333)
+  * Split out the old unformatted changelog entries to quiet lintian
+
+ -- Stephen Gran <sgran@debian.org>  Tue, 19 Sep 2006 00:44:08 +0100
+
+hdparm (6.6-2) unstable; urgency=low
+
+  * Add -dbg package
+    This requires incrementing the versioned dep on debhelper
+  * Increment Standards-Version to 3.7.2 (no changes)
+
+ -- Stephen Gran <sgran@debian.org>  Thu, 18 May 2006 23:59:56 +0100
+
 hdparm (6.6-1ubuntu3) edgy; urgency=low
 
   * Remove the init script again.

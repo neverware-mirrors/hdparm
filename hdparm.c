@@ -26,7 +26,7 @@
 
 extern const char *minor_str[];
 
-#define VERSION "v6.6"
+#define VERSION "v6.9"
 
 #undef DO_FLUSHCACHE		/* under construction: force cache flush on -W0 */
 
@@ -44,7 +44,6 @@ extern const char *minor_str[];
 
 #define TIMING_BUF_MB		2
 #define TIMING_BUF_BYTES	(TIMING_BUF_MB * 1024 * 1024)
-#define BUFCACHE_FACTOR		2
 
 char *progname;
 static int verbose = 0, get_identity = 0, get_geom = 0, noisy = 1, quiet = 0;
@@ -85,6 +84,8 @@ static unsigned long set_doorlock = 0, get_doorlock = 0, doorlock = 0;
 static unsigned long set_seagate  = 0, get_seagate  = 0;
 static unsigned long set_standbynow = 0, get_standbynow = 0;
 static unsigned long set_sleepnow   = 0, get_sleepnow   = 0;
+static unsigned long set_powerup_in_standby = 0, get_powerup_in_standby = 0, powerup_in_standby = 0;
+static unsigned long get_hitachi_temp = 0;
 
 #ifdef IDE_DRIVE_TASK_NO_DATA
 static unsigned long set_freeze   = 0;
@@ -107,7 +108,7 @@ static char security_password[33];
 
 static unsigned long get_powermode  = 0;
 static unsigned long set_apmmode = 0, get_apmmode= 0, apmmode = 0;
-#endif
+#endif // HDIO_DRIVE_CMD
 #ifdef CDROM_SELECT_SPEED
 static unsigned long set_cdromspeed = 0, cdromspeed = 0;
 #endif /* CDROM_SELECT_SPEED */
@@ -252,6 +253,12 @@ static void dump_identity (const struct hd_driveid *id)
 			if (id->dma_ultra & 0x002)	strcat(umodes,"udma1 ");
 			if (id->dma_ultra & 0x400)	strcat(umodes,"*");
 			if (id->dma_ultra & 0x004)	strcat(umodes,"udma2 ");
+			if (id->dma_ultra & 0x800)	strcat(umodes,"*");
+			if (id->dma_ultra & 0x008)	strcat(umodes,"udma3 ");
+			if (id->dma_ultra & 0x1000)	strcat(umodes,"*");
+			if (id->dma_ultra & 0x010)	strcat(umodes,"udma4 ");
+			if (id->dma_ultra & 0x2000)	strcat(umodes,"*");
+			if (id->dma_ultra & 0x020)	strcat(umodes,"udma5 ");
 #ifdef __NEW_HD_DRIVE_ID
 			if (id->hw_config & 0x2000) {
 #else /* !__NEW_HD_DRIVE_ID */
@@ -425,14 +432,14 @@ void time_cache (int fd)
 
 	elapsed -= elapsed2;
 
-	if ((BUFCACHE_FACTOR * total_MB) >= elapsed)  /* more than 1MB/s */
+	if (total_MB >= elapsed)  /* more than 1MB/s */
 		printf("%3u MB in %5.2f seconds = %6.2f MB/sec\n",
-			(BUFCACHE_FACTOR * total_MB), elapsed,
-			(BUFCACHE_FACTOR * total_MB) / elapsed);
+			total_MB, elapsed,
+			total_MB / elapsed);
 	else
 		printf("%3u MB in %5.2f seconds = %6.2f kB/sec\n",
-			(BUFCACHE_FACTOR * total_MB), elapsed,
-			(BUFCACHE_FACTOR * total_MB) / elapsed * 1024);
+			total_MB, elapsed,
+			total_MB / elapsed * 1024);
 
 	flush_buffer_cache(fd);
 	sleep(1);
@@ -894,6 +901,16 @@ void process_dev (char *devname)
 		if (ioctl(fd, HDIO_DRIVE_CMD, &args))
 			perror(" HDIO_DRIVE_CMD(setreadahead) failed");
 	}
+	if (set_powerup_in_standby) {
+		unsigned char args[4] = {WIN_SETFEATURES,0,0,0};
+		args[2] = powerup_in_standby ? 0x06 : 0x86;
+		if (get_powerup_in_standby) {
+			printf(" setting power-up in standby to %ld", powerup_in_standby);
+			on_off(powerup_in_standby);
+		}
+		if (ioctl(fd, HDIO_DRIVE_CMD, &args))
+			perror(" HDIO_DRIVE_CMD(powerup_in_standby) failed");
+	}
 	if (set_apmmode) {
 		unsigned char args[4] = {WIN_SETFEATURES,0,0,0};
 		if (apmmode<1) apmmode=1;
@@ -1110,6 +1127,21 @@ consecutively in two runs (assuming the segfault isn't followed by an oops.
 		if (ioctl(fd, HDIO_DRIVE_CMD, &args))
 			perror(" HDIO_DRIVE_CMD(setidle1) failed");
 	}
+	if (get_hitachi_temp) {
+		unsigned char args[4] = {0xf0,0,0x01,0}; /* "Sense Condition", vendor-specific */
+		if (ioctl(fd, HDIO_DRIVE_CMD, &args))
+			perror(" HDIO_DRIVE_CMD(hitachisensecondition) failed");
+		else {
+			printf(" drive temperature (celsius) is:  ");
+			if (args[2]==0)
+				printf("under -20");
+			else if (args[2]==0xFF)
+				printf("over 107");
+			else
+				printf("%d", args[2]/2-20);
+			printf("\n drive temperature in range:  %s\n", YN(!(args[1]&0x10)) );
+		}
+	}
 
 	if (!flagcount)
 		verbose = 1;
@@ -1237,7 +1269,7 @@ consecutively in two runs (assuming the segfault isn't followed by an oops.
 		unsigned char args[4] = {WIN_CHECKPOWERMODE1,0,0,0};
 		const char *state;
 		if (ioctl(fd, HDIO_DRIVE_CMD, &args)
-		 && (args[0] == WIN_CHECKPOWERMODE2) /* try again with 0x98 */
+		 && (args[0] = WIN_CHECKPOWERMODE2) /* (single =) try again with 0x98 */
 		 && ioctl(fd, HDIO_DRIVE_CMD, &args)) {
 			if (errno != EIO || args[0] != 0 || args[1] != 0)
 				state = "unknown";
@@ -1298,7 +1330,7 @@ consecutively in two runs (assuming the segfault isn't followed by an oops.
 			for(i = 0; i < 0x100; ++i) {
 				__le16_to_cpus(&id[i]);
 			}
-			identify((void *)id, NULL);
+			identify((void *)id);
 		}
 identify_abort:	;
 	}
@@ -1348,6 +1380,7 @@ identify_abort:	;
  #endif /* HDIO_SET_ACOUSTIC */
  #ifdef HDIO_GET_ACOUSTIC
 	if (get_acoustic) {
+		// FIXME:  use Word94 from IDENTIFY for this value
 		if (ioctl(fd, HDIO_GET_ACOUSTIC, &parm)) {
 			perror(" HDIO_GET_ACOUSTIC failed");
 		} else {
@@ -1404,6 +1437,9 @@ void usage_error (int out)
 	" -f   flush buffer cache for device on exit\n"
 	" -g   display drive geometry\n"
 	" -h   display terse usage information\n"
+#ifdef HDIO_DRIVE_CMD
+	" -H   read temperature from drive (Hitachi only)\n"
+#endif
 	" -i   display drive identification\n"
 	" -I   detailed/current information directly from drive\n"
 	" --Istdin  read identify data from stdin as ASCII hex\n"
@@ -1437,6 +1473,7 @@ void usage_error (int out)
 	" -R   register an IDE interface (DANGEROUS)\n"
 #endif
 #ifdef HDIO_DRIVE_CMD
+	" -s   set power-up in standby flag (0/1)\n"
 	" -S   set standby (spindown) timeout\n"
 #endif
 	" -t   perform device read timings\n"
@@ -1542,38 +1579,55 @@ static void security_help (void)
 
 static int fromhex (unsigned char c)
 {
-	if (c >= 'a' && c <= 'f')
-		return 10 + (c - 'a');
 	if (c >= '0' && c <= '9')
 		return (c - '0');
+	if (c >= 'a' && c <= 'f')
+		return 10 + (c - 'a');
+	if (c >= 'A' && c <= 'F')
+		return 10 + (c - 'A');
 	fprintf(stderr, "bad char: '%c' 0x%02x\n", c, c);
 	exit(-1);
 }
 
+static int ishex (char c)
+{
+	return ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'));
+}
+
 static int identify_from_stdin (void)
 {
-	unsigned short sbuf[800];
-	unsigned char  buf[1600], *b = (unsigned char *)buf;
-	int i, count;
+	unsigned short sbuf[512];
+	int err, wc = 0;
 
-	// skip leading cruft
-	while (1 == read(0, buf, 1) && (*buf < '0' || *buf > '9') && (*buf < 'a' || *buf > 'f'))
-		while (1 == read(0, buf, 1) && *buf != '\n');
+	do {
+		int digit;
+		char d[4];
 
-	count = read(0, buf+1, 1279);
-	if (count != 1279) {
-		fprintf(stderr, "read(1279 bytes) failed (rc=%d)", count);
-		perror("");
-		exit(errno);
-	}
-	for (i = 0; count >= 4; ++i) {
-		sbuf[i] = (fromhex(b[0]) << 12) | (fromhex(b[1]) << 8) | (fromhex(b[2]) << 4) | fromhex(b[3]);
-		__le16_to_cpus((__u16 *)(&sbuf[i]));
-		b += 5;
-		count -= 5;
-	}
-	identify(sbuf, NULL);
+		if (ishex(d[digit=0] = getchar())
+		 && ishex(d[++digit] = getchar())
+		 && ishex(d[++digit] = getchar())
+		 && ishex(d[++digit] = getchar())) {
+		 	sbuf[wc] = (fromhex(d[0]) << 12) | (fromhex(d[1]) << 8) | (fromhex(d[2]) << 4) | fromhex(d[3]);
+			__le16_to_cpus((__u16 *)(&sbuf[wc]));
+			++wc;
+		} else if (d[digit] == EOF) {
+			goto eof;
+		} else if (wc == 0) {
+			/* skip over leading lines of cruft */
+			while (d[digit] != '\n') {
+				if (d[digit] == EOF)
+					goto eof;
+				d[digit=0] = getchar();
+			};
+		}
+	} while (wc < 256);
+	putchar('\n');
+	identify(sbuf);
 	return 0;
+eof:
+	err = errno;
+	fprintf(stderr, "read only %u/256 IDENTIFY words from stdin: %s\n", wc, strerror(err));
+	exit(err);
 }
 
 int main(int argc, char **argv)
@@ -1596,14 +1650,17 @@ int main(int argc, char **argv)
 		if (*p == '-') {
 			if (0 == strcmp(p, "--direct")) {
 				open_flags |= O_DIRECT;
+				++flagcount;
 				continue;
 			}
 			if (0 == strcmp(p, "--Istdin")) {
 				identify_from_stdin();
+				++flagcount;
 				continue;
 			}
 			if (0 == strcmp(p, "--Istdout")) {
 				get_IDentity = 2;
+				++flagcount;
 				continue;
 			}
 			if (!*++p)
@@ -1696,6 +1753,14 @@ int main(int argc, char **argv)
 						GET_NUMBER(set_io32bit,io32bit);
 						break;
 #ifdef HDIO_DRIVE_CMD
+					case 's':
+						get_powerup_in_standby = noisy;
+						noisy = 1;
+						GET_NUMBER(set_powerup_in_standby,powerup_in_standby);
+						if (!set_powerup_in_standby)
+							fprintf(stderr, "-s: missing value\n");
+						break;
+
 					case 'S':
 						get_standby = noisy;
 						noisy = 1;
@@ -1809,6 +1874,10 @@ int main(int argc, char **argv)
 						get_seagate = noisy;
 						noisy = 1;
 						set_seagate = 1;
+						break;
+					case 'H':
+						get_hitachi_temp = noisy;
+						noisy = 1;
 						break;
 #endif /* HDIO_DRIVE_CMD */
 #ifdef HDIO_GET_KEEPSETTINGS
