@@ -1,5 +1,5 @@
 hdparm for Debian
------------------
+  -----------------
   
 General hard disk tuning:
   
@@ -89,4 +89,4 @@ Known problems, limitations, and work-arounds:
   i.e.:
   FORCE_RUN=yes /etc/init.d/hdparm start
 
- -- Scott James Remnant <scott@netsplit.com>, Wed Jun 28 23:42:41 2006
+ -- Stephen Gran <sgran@debian.org>  Wed, 10 Aug 2005 14:48:31 -0400
