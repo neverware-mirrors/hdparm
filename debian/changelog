@@ -1,3 +1,10 @@
+hdparm (6.9-1ubuntu2) feisty; urgency=low
+
+  * Rebuild for changes in the amd64 toolchain.
+  * Set Ubuntu maintainer address.
+
+ -- Matthias Klose <doko@ubuntu.com>  Mon,  5 Mar 2007 01:18:04 +0000
+
 hdparm (6.9-1ubuntu1) feisty; urgency=low
 
   * Merge from debian unstable, remaining changes:
