@@ -1,3 +1,33 @@
+hdparm (7.1-2ubuntu1) gutsy; urgency=low
+
+  * Merge from debian unstable, remaining changes:
+    - remove init script, install udev rules instead
+    - set Ubuntu maintainer address.
+
+ -- Michael Vogt <michael.vogt@ubuntu.com>  Mon, 21 May 2007 08:47:38 +0200
+
+hdparm (7.1-2) unstable; urgency=low
+
+  * Don't ship a binary in contrib/ (even though upstream puts it in the
+    tarball)
+
+ -- Stephen Gran <sgran@debian.org>  Sun, 29 Apr 2007 03:33:05 +0100
+
+hdparm (7.1-1) unstable; urgency=low
+
+  * New upstream version
+  * Add debian/patches/40_hdparm_no_strip.dpatch to keep build system from
+    stripping hdparm binary before dh_strip can get to it.
+
+ -- Stephen Gran <sgran@debian.org>  Sun, 29 Apr 2007 03:02:39 +0100
+
+hdparm (6.9-2) unstable; urgency=low
+
+  * Typo fix in manpage (closes: #396809)
+  * Better explain get/set options (closes: #397792)
+
+ -- Stephen Gran <sgran@debian.org>  Sat, 17 Feb 2007 03:30:06 +0000
+
 hdparm (6.9-1ubuntu2) feisty; urgency=low
 
   * Rebuild for changes in the amd64 toolchain.
