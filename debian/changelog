@@ -1,3 +1,25 @@
+hdparm (7.5-1ubuntu1) gutsy; urgency=low
+
+  * Merge from debian unstable, remaining changes:
+    - remove init script, install udev rules instead
+    - set Ubuntu maintainer address.
+
+ -- Michael Vogt <michael.vogt@ubuntu.com>  Thu, 14 Jun 2007 09:54:59 +0200
+
+hdparm (7.5-1) unstable; urgency=low
+
+  * New upstream version
+
+ -- Stephen Gran <sgran@debian.org>  Wed, 06 Jun 2007 21:13:36 +0100
+
+hdparm (7.3-1) unstable; urgency=low
+
+  * New upstream version
+    - partial fix for #423186, rest patched, so (closes: #423186)
+  * Stop installing useless stop links in rc0 and rc6 (closes: #422795)
+
+ -- Stephen Gran <sgran@debian.org>  Thu, 31 May 2007 02:34:11 +0100
+
 hdparm (7.1-2ubuntu1) gutsy; urgency=low
 
   * Merge from debian unstable, remaining changes:
