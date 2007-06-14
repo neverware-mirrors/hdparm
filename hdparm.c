@@ -24,7 +24,7 @@
 
 extern const char *minor_str[];
 
-#define VERSION "v7.1"
+#define VERSION "v7.5"
 
 #ifndef O_DIRECT
 #define O_DIRECT	040000	/* direct disk access, not easily obtained from headers */
@@ -86,7 +86,7 @@ static char security_password[33];
 static int get_powermode  = 0, set_powermode = 0;
 static int set_apmmode = 0, get_apmmode= 0, apmmode = 0;
 static int get_cdromspeed = 0, set_cdromspeed = 0, cdromspeed = 0;
-static int do_IDentity = 0;
+static int do_IDentity = 0, do_drq_hsm_error = 0;
 static int get_unregister = 0, set_unregister = 0, unregister = 0;
 static int	hwif = 0;
 static int	scan_hwif = 0;
@@ -99,8 +99,9 @@ static int	set_acoustic = 0, get_acoustic = 0, acoustic = 0;
 
 static int	get_doreset = 0, set_doreset = 0;
 static int	get_tristate = 0, set_tristate = 0, tristate = 0;
+static int	i_know_what_i_am_doing = 0;
 
-static int open_flags = O_RDONLY|O_NONBLOCK;
+static int open_flags = O_RDWR|O_NONBLOCK;
 
 // Historically, if there was no HDIO_OBSOLETE_IDENTITY, then
 // then the HDIO_GET_IDENTITY only returned 142 bytes.
@@ -266,12 +267,17 @@ static void dump_identity (__u16 *idw)
 	printf("\n");
 }
 
+#ifndef ENOIOCTLCMD
+#define ENOIOCTLCMD ENOTTY
+#endif
+
 void flush_buffer_cache (int fd)
 {
 	fsync (fd);				/* flush buffers */
 	if (ioctl(fd, BLKFLSBUF, NULL))		/* do it again, big time */
 		perror("BLKFLSBUF failed");
-	if (do_drive_cmd(fd, NULL) && errno != EINVAL)	/* await completion */
+	/* await completion */
+	if (do_drive_cmd(fd, NULL) && errno != EINVAL && errno != ENOTTY && errno != ENOIOCTLCMD)
 		perror("HDIO_DRIVE_CMD(null) (wait for flush complete) failed");
 }
 
@@ -396,10 +402,12 @@ static int do_blkgetsize (int fd, unsigned long long *blksize64)
 	int		rc;
 	unsigned int	blksize32 = 0;
 
+#ifdef BLKGETSIZE64
 	if (0 == ioctl(fd, BLKGETSIZE64, blksize64)) {	// returns bytes
 		*blksize64 /= 512;
 		return 0;
 	}
+#endif
 	rc = ioctl(fd, BLKGETSIZE, &blksize32);	// returns sectors
 	if (rc)
 		perror(" BLKGETSIZE failed");
@@ -751,6 +759,8 @@ do_set_security (int fd)
 		exit(err);
 }
 
+static __u8 last_identify_op = 0;
+
 static void *get_identify_data (int fd, void *prev)
 {
 	static __u8 args[4+512];
@@ -760,10 +770,12 @@ static void *get_identify_data (int fd, void *prev)
 	if (prev != (void *)-1)
 		return prev;
 	memset(args, 0, sizeof(args));
-	args[0] = ATA_OP_IDENTIFY;
+	last_identify_op = ATA_OP_IDENTIFY;
+	args[0] = last_identify_op;
 	args[3] = 1;
 	if (do_drive_cmd(fd, args)) {
-		args[0] = ATA_OP_PIDENTIFY;
+		last_identify_op = ATA_OP_PIDENTIFY;
+		args[0] = last_identify_op;
 		args[1] = 0;
 		args[2] = 0;
 		args[3] = 1;
@@ -776,6 +788,16 @@ static void *get_identify_data (int fd, void *prev)
 	for (i = 0; i < 0x100; ++i)
 		__le16_to_cpus(&id[i]);
 	return id;
+}
+
+static void confirm_i_know_what_i_am_doing (const char *opt, const char *explanation)
+{
+	if (!i_know_what_i_am_doing) {
+		fprintf(stderr, "Use of %s is VERY DANGEROUS.\n%s\n"
+		"Please supply the --yes-i-know-what-i-am-doing flag if you really want this\n"
+		"Program aborted\n", opt, explanation);
+		exit(EPERM);
+	}
 }
 
 void process_dev (char *devname)
@@ -952,6 +974,9 @@ void process_dev (char *devname)
 			printf(" spin-up:");
 			fflush(stdout);
 			(void) do_drive_cmd(fd, args1);
+		} else {
+			confirm_i_know_what_i_am_doing("-s1",
+				"This requires BIOS and kernel support to recognize/boot the drive.");
 		}
 		if (get_powerup_in_standby) {
 			printf(" setting power-up in standby to %d", powerup_in_standby);
@@ -1063,6 +1088,20 @@ void process_dev (char *devname)
 			printf(" setting bus state to %d (%s)\n", busstate, busstate_str(busstate));
 		if (ioctl(fd, HDIO_SET_BUSSTATE, busstate))
 			perror(" HDIO_SET_BUSSTATE failed");
+	}
+	if (do_drq_hsm_error) {
+		id = get_identify_data(fd, id);
+		if (id) {
+			__u8 args[4] = {0,0,0,0};
+			args[0] = last_identify_op;
+			sync();
+			printf(" triggering \"stuck DRQ\" host state machine error\n");
+			sync();
+			sleep(1);
+			do_drive_cmd(fd, args);
+			perror("do_drq_hsm_error");
+			fprintf(stderr, "ata status=0x%02x ata error=0x%02x\n", args[0], args[1]);
+		}
 	}
 	if (get_hitachi_temp) {
 		__u8 args[4] = {0xf0,0,0x01,0}; /* "Sense Condition", vendor-specific */
@@ -1184,14 +1223,10 @@ void process_dev (char *devname)
 		const char *state;
 		if (do_drive_cmd(fd, args)
 		 && (args[0] = ATA_OP_CHECKPOWERMODE2) /* (single =) try again with 0x98 */
-		 && do_drive_cmd(fd, args)) {
-			if (errno != EIO || args[0] != 0 || args[1] != 0)
-				state = "unknown";
-			else
-				state = "sleeping";
-		} else {
+		 && do_drive_cmd(fd, args))
+			state = "unknown";
+		else
 			state = (args[2] == 255) ? "active/idle" : "standby";
-		}
 		printf(" drive state is:  %s\n", state);
 	}
 	if (do_identity) {
@@ -1349,6 +1384,7 @@ static void usage_help (int rc)
 	" --Istdout        write identify data to stdout as ASCII hex\n"
 	" --verbose        display extra diagnostics from some commands\n"
 	" --security-help  display help for ATA security commands\n"
+	" --drq-hsm-error  crash system with a \"stuck DRQ\" error (VERY DANGEROUS)\n"
 	"\n");
 	exit(rc);
 }
@@ -1538,27 +1574,22 @@ handle_standalone_longarg (char *name)
 	} else if (0 == strcasecmp(name, "security-freeze")) {
 		set_freeze = 1;
 	} else if (0 == strcasecmp(name, "security-unlock")) {
-		open_flags |= O_RDWR;
 		set_security = 1;
 		security_command = ATA_OP_SECURITY_UNLOCK;
 		get_security_password(0);
 	} else if (0 == strcasecmp(name, "security-set-pass")) {
-		open_flags |= O_RDWR;
 		set_security = 1;
 		security_command = ATA_OP_SECURITY_SET_PASS;
 		get_security_password(1);
 	} else if (0 == strcasecmp(name, "security-disable")) {
-		open_flags |= O_RDWR;
 		set_security = 1;
 		security_command = ATA_OP_SECURITY_DISABLE;
 		get_security_password(1);
 	} else if (0 == strcasecmp(name, "security-erase")) {
-		open_flags |= O_RDWR;
 		set_security = 1;
 		security_command = ATA_OP_SECURITY_ERASE_UNIT;
 		get_security_password(1);
 	} else if (0 == strcasecmp(name, "security-erase-enhanced")) {
-		open_flags |= O_RDWR;
 		set_security = 1;
 		enhanced_erase = 1;
 		security_command = ATA_OP_SECURITY_ERASE_UNIT;
@@ -1578,8 +1609,14 @@ get_longarg (void)
 	if (0 == strcasecmp(name, "verbose")) {
 		verbose = 1;
 		--num_flags_processed;	/* doesn't count as an action flag */
+	} else if (0 == strcasecmp(name, "yes-i-know-what-i-am-doing")) {
+		i_know_what_i_am_doing = 1;
+		--num_flags_processed;	/* doesn't count as an action flag */
 	} else if (0 == strcasecmp(name, "direct")) {
 		open_flags |= O_DIRECT;
+		--num_flags_processed;	/* doesn't count as an action flag */
+	} else if (0 == strcasecmp(name, "drq-hsm-error")) {
+		do_drq_hsm_error = 1;
 	} else if (0 == strcasecmp(name, "Istdout")) {
 		do_IDentity = 2;
 	} else if (0 == strcasecmp(name, "security-mode")) {
