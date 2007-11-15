@@ -1,3 +1,24 @@
+hdparm (7.7-1ubuntu1) hardy; urgency=low
+
+  * Merge from debian unstable, remaining changes:
+    - remove init script, install udev rules instead
+    - set Ubuntu maintainer address.
+
+ -- Michael Vogt <michael.vogt@ubuntu.com>  Thu, 15 Nov 2007 12:39:58 +0100
+
+hdparm (7.7-1) unstable; urgency=low
+
+  * New upstream version
+
+ -- Stephen Gran <sgran@debian.org>  Sat, 11 Aug 2007 12:35:12 +0100
+
+hdparm (7.6-1) unstable; urgency=low
+
+  * New upstream version
+  * Update conffile handling in preinst
+
+ -- Stephen Gran <sgran@debian.org>  Sun, 15 Jul 2007 15:50:24 +0100
+
 hdparm (7.5-1ubuntu1) gutsy; urgency=low
 
   * Merge from debian unstable, remaining changes:
