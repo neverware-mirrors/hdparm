@@ -1,3 +1,32 @@
+hdparm (8.6-1ubuntu1) hardy; urgency=low
+
+  * Merge from Debian unstable (LP: #203736). Remaining Ubuntu changes:
+    - remove init script, install udev rules instead
+    - set Ubuntu maintainer address.
+    - debian/control: Do not depend on lsb-base
+  * Fixes "udev rules only for hd[a-z], not sd[a-z]" (LP: #156893)
+  * Remove hdparm init script and make it not re-appear in next merges
+    - debian/rules: add "--onlyscripts" to DEB_DH_INSTALLINIT_ARGS, so that the
+      init script does not get installed
+    - debian/preinst: bump version in rm_conffile call
+
+ -- Daniel Hahler <ubuntu@thequod.de>  Fri, 28 Mar 2008 21:44:38 +0100
+
+hdparm (8.6-1) unstable; urgency=low
+
+  * New upstream version
+  * Udev rule can also match for sata devices (closes: #471401)
+
+ -- Stephen Gran <sgran@debian.org>  Tue, 18 Mar 2008 01:06:37 +0000
+
+hdparm (8.3-1) unstable; urgency=low
+
+  * New upstream release
+  * easier config of spindown time (closes: #462766)
+  * Update Standards-Version (no changes)
+
+ -- Stephen Gran <sgran@debian.org>  Tue, 19 Feb 2008 22:39:32 +0000
+
 hdparm (7.7-1ubuntu1) hardy; urgency=low
 
   * Merge from debian unstable, remaining changes:

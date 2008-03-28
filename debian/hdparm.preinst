@@ -19,7 +19,7 @@ rm_conffile() {
 }
 
 if [ "$1" = install ] || [ "$1" = upgrade ]; then
-  if dpkg --compare-versions "$2" lt 6.3-3ubuntu1; then
+  if dpkg --compare-versions "$2" le 8.6-1ubuntu1; then
       rm_conffile /etc/init.d/hdparm
       update-rc.d -f hdparm remove >/dev/null 2>&1
   fi

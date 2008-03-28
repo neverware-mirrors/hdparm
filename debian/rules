@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 # 02111-1307 USA.
 
-DEB_DH_INSTALLINIT_ARGS := '--no-start' --noscripts
+DEB_DH_INSTALLINIT_ARGS := --no-start --noscripts --onlyscripts
 #DEB_DH_LINK_ARGS := ../init.d/hdparm /etc/rcS.d/S07hdparm.first
 DEB_FIXPERMS_EXCLUDE:= 20hdparm
 

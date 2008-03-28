@@ -1,2 +1,2 @@
-ACTION=="add", SUBSYSTEM=="block", KERNEL=="hd[a-z]", \
+ACTION=="add", SUBSYSTEM=="block", KERNEL=="[sh]d[a-z]", \
 	RUN+="/lib/udev/hdparm"
