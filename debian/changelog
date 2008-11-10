@@ -1,8 +1,24 @@
+hdparm (8.9-2ubuntu1) jaunty; urgency=low
+
+  * Merge from debian unstable, remaining changes:
+    - remove init script, install udev rules instead
+    - debian/control: Do not depend on lsb-base
+
+ -- Michael Vogt <michael.vogt@ubuntu.com>  Mon, 10 Nov 2008 14:02:31 +0100
+
 hdparm (8.9-2) unstable; urgency=low
 
   * Remove stale stop links (closes: #497903)
 
  -- Stephen Gran <sgran@debian.org>  Fri, 05 Sep 2008 11:23:20 +0100
+
+hdparm (8.9-1ubuntu1) intrepid; urgency=low
+
+  * Merge from debian unstable, remaining changes:
+    - remove init script, install udev rules instead
+    - debian/control: Do not depend on lsb-base
+
+ -- Michael Vogt <michael.vogt@ubuntu.com>  Thu, 19 Jun 2008 10:40:06 +0200
 
 hdparm (8.9-1) unstable; urgency=low
 
@@ -25,6 +41,20 @@ hdparm (8.7-1) unstable; urgency=low
 
  -- Stephen Gran <sgran@debian.org>  Tue, 03 Jun 2008 00:36:06 +0100
 
+hdparm (8.6-1ubuntu1) hardy; urgency=low
+
+  * Merge from Debian unstable (LP: #203736). Remaining Ubuntu changes:
+    - remove init script, install udev rules instead
+    - set Ubuntu maintainer address.
+    - debian/control: Do not depend on lsb-base
+  * Fixes "udev rules only for hd[a-z], not sd[a-z]" (LP: #156893)
+  * Remove hdparm init script and make it not re-appear in next merges
+    - debian/rules: add "--onlyscripts" to DEB_DH_INSTALLINIT_ARGS, so that the
+      init script does not get installed
+    - debian/preinst: bump version in rm_conffile call
+
+ -- Daniel Hahler <ubuntu@thequod.de>  Fri, 28 Mar 2008 21:44:38 +0100
+
 hdparm (8.6-1) unstable; urgency=low
 
   * New upstream version
@@ -40,6 +70,14 @@ hdparm (8.3-1) unstable; urgency=low
 
  -- Stephen Gran <sgran@debian.org>  Tue, 19 Feb 2008 22:39:32 +0000
 
+hdparm (7.7-1ubuntu1) hardy; urgency=low
+
+  * Merge from debian unstable, remaining changes:
+    - remove init script, install udev rules instead
+    - set Ubuntu maintainer address.
+
+ -- Michael Vogt <michael.vogt@ubuntu.com>  Thu, 15 Nov 2007 12:39:58 +0100
+
 hdparm (7.7-1) unstable; urgency=low
 
   * New upstream version
@@ -52,6 +90,14 @@ hdparm (7.6-1) unstable; urgency=low
   * Update conffile handling in preinst
 
  -- Stephen Gran <sgran@debian.org>  Sun, 15 Jul 2007 15:50:24 +0100
+
+hdparm (7.5-1ubuntu1) gutsy; urgency=low
+
+  * Merge from debian unstable, remaining changes:
+    - remove init script, install udev rules instead
+    - set Ubuntu maintainer address.
+
+ -- Michael Vogt <michael.vogt@ubuntu.com>  Thu, 14 Jun 2007 09:54:59 +0200
 
 hdparm (7.5-1) unstable; urgency=low
 
@@ -66,6 +112,14 @@ hdparm (7.3-1) unstable; urgency=low
   * Stop installing useless stop links in rc0 and rc6 (closes: #422795)
 
  -- Stephen Gran <sgran@debian.org>  Thu, 31 May 2007 02:34:11 +0100
+
+hdparm (7.1-2ubuntu1) gutsy; urgency=low
+
+  * Merge from debian unstable, remaining changes:
+    - remove init script, install udev rules instead
+    - set Ubuntu maintainer address.
+
+ -- Michael Vogt <michael.vogt@ubuntu.com>  Mon, 21 May 2007 08:47:38 +0200
 
 hdparm (7.1-2) unstable; urgency=low
 
@@ -88,6 +142,22 @@ hdparm (6.9-2) unstable; urgency=low
   * Better explain get/set options (closes: #397792)
 
  -- Stephen Gran <sgran@debian.org>  Sat, 17 Feb 2007 03:30:06 +0000
+
+hdparm (6.9-1ubuntu2) feisty; urgency=low
+
+  * Rebuild for changes in the amd64 toolchain.
+  * Set Ubuntu maintainer address.
+
+ -- Matthias Klose <doko@ubuntu.com>  Mon,  5 Mar 2007 01:18:04 +0000
+
+hdparm (6.9-1ubuntu1) feisty; urgency=low
+
+  * Merge from debian unstable, remaining changes:
+    - remove init script, install udev rules instead
+
+  * Update udev script from init script
+
+ -- Scott James Remnant <scott@ubuntu.com>  Mon, 27 Nov 2006 14:14:39 +0000
 
 hdparm (6.9-1) unstable; urgency=low
 
@@ -140,6 +210,29 @@ hdparm (6.6-2) unstable; urgency=low
 
  -- Stephen Gran <sgran@debian.org>  Thu, 18 May 2006 23:59:56 +0100
 
+hdparm (6.6-1ubuntu3) edgy; urgency=low
+
+  * Remove the init script again.
+
+ -- Scott James Remnant <scott@ubuntu.com>  Thu, 20 Jul 2006 23:33:21 +0100
+
+hdparm (6.6-1ubuntu2) edgy; urgency=low
+
+  * Repair CDBS damage ... silently enabling features depending on the
+    filename of files that may have existed before is BAD, OKAY?
+
+ -- Scott James Remnant <scott@ubuntu.com>  Mon,  3 Jul 2006 23:03:13 +0100
+
+hdparm (6.6-1ubuntu1) edgy; urgency=low
+
+  [ Ongoing Merge Process ]
+  * Merge from debian unstable.
+
+  [ Scott James Remnant ]
+  * Drop conffile move now dapper is released.
+
+ -- Scott James Remnant <scott@ubuntu.com>  Wed, 28 Jun 2006 23:44:49 +0100
+
 hdparm (6.6-1) unstable; urgency=low
 
   * New upstream release
@@ -150,6 +243,14 @@ hdparm (6.6-1) unstable; urgency=low
   * Add APM/ACPI discussion to README.Debian (closes: #327442)
 
  -- Stephen Gran <sgran@debian.org>  Tue, 18 Apr 2006 13:28:33 +0100
+
+hdparm (6.3-3ubuntu1) dapper; urgency=low
+
+  * Resynchronise with Debian.
+  * Drop init script completely, udev will run the right magic for each
+    new block device anyway.
+
+ -- Scott James Remnant <scott@ubuntu.com>  Thu, 15 Dec 2005 01:56:46 +0000
 
 hdparm (6.3-3) unstable; urgency=low
 
@@ -171,6 +272,96 @@ hdparm (6.3-1) unstable; urgency=low
   * Switch to dpatch, and start adding tiny patches there
 
  -- Stephen Gran <sgran@debian.org>  Mon, 21 Nov 2005 23:44:43 +0000
+
+hdparm (6.1-7) unstable; urgency=low
+
+  * Make eval_value fail if unknown value passed to it (closes: #329443)
+  * Get rid of deprecated dev.d/ file (closes: #329450)
+  * Add /etc/udev/rules.d/ to package (closes: #329731)
+
+ -- Stephen Gran <sgran@debian.org>  Sat, 24 Sep 2005 01:03:51 +0100
+
+hdparm (6.1-7ubuntu2) dapper; urgency=low
+
+  * Fix incorrect syntax in hdparm.rules file.
+  * Install hdparm.rules as /etc/udev/rules.d/85-hdparm.rules to match
+    new udev packages; move file if customised in ubuntu1.
+
+ -- Scott James Remnant <scott@ubuntu.com>  Fri, 18 Nov 2005 10:03:15 +0000
+
+hdparm (6.1-7ubuntu1) dapper; urgency=low
+
+  * Resynchronise with Debian.
+    (Yes, really, me; not any of those imposters!)
+    - Kept versioned-dep on lsb-base.
+    - Kept include of /etc/default/rcS in hdparm.init as we check VERBOSE,
+      I'm not sure why Debian don't do that.
+    - Merge both sets of init script changes to roughly produce the same
+      effect, less logging than Debian but with combined init and hotplug
+      script.
+  * Dropped postrm and postinst, instead install hdparm.rules directly into
+    /etc/udev/rules.d, we have no need to mess about with symlinks.
+  * Dropped support for /etc/default/hdparm as it doesn't really work with
+    udev anyway, and there should only be one way to do things, damnit.
+
+ -- Scott James Remnant <scott@ubuntu.com>  Tue, 08 Nov 2005 07:20:28 +0000
+
+hdparm (6.1-6) unstable; urgency=low
+
+  * Migrate from dev.d to udev/hdparm.rules (closes: #329026)
+  * remerge manpage patch for -M (closes: #325237)
+
+ -- Stephen Gran <sgran@debian.org>  Mon, 19 Sep 2005 08:19:27 +0100
+
+hdparm (6.1-5) unstable; urgency=low
+
+  * Change udev script name to end in .dev (hmm, really should have
+    investigated that more) (closes: #322636)
+
+ -- Stephen Gran <sgran@debian.org>  Fri, 12 Aug 2005 08:56:00 -0400
+
+hdparm (6.1-4) unstable; urgency=low
+
+  * Grr, I _would_ have had a working solution, if only I actually installed
+    all the files.
+
+ -- Stephen Gran <sgran@debian.org>  Thu, 11 Aug 2005 09:57:28 -0400
+
+hdparm (6.1-3) unstable; urgency=low
+
+  * Finally, I think I have a working udev method (much thanks to Ubuntu for
+    doing rather a lot of the work getting it there)
+    (closes: #274109, #312949)
+  * security-freeze support for init script (closes: #317675)
+  * hdparm.conf manpage written and included (closes: #319928)
+
+ -- Stephen Gran <sgran@debian.org>  Wed, 10 Aug 2005 15:26:36 -0400
+
+hdparm (6.1-2) unstable; urgency=low
+
+  * Typo fixups in /etc/default/hdparm (closes: #310517)
+
+ -- Stephen Gran <sgran@debian.org>  Tue, 24 May 2005 10:08:42 -0400
+
+hdparm (6.1-1ubuntu2) breezy; urgency=low
+
+  * Fix the hdparm.dev script to only execute hdparm for the block device
+    being created, rather than for every block device configured in the file.
+    This prevents an hdparm storm bringing down the machine.  (Ubuntu: #16433)
+
+ -- Scott James Remnant <scott@ubuntu.com>  Tue, 27 Sep 2005 21:00:19 +0100
+
+hdparm (6.1-1ubuntu1) breezy; urgency=low
+
+  * Resynchronise with Debian, resolving merge conflicts.
+
+ -- Adam Conrad <adconrad@0c3.net>  Thu, 21 Apr 2005 09:33:45 +0000
+
+hdparm (6.1-1) unstable; urgency=low
+
+  * New upstream version
+
+ -- Stephen Gran <sgran@debian.org>  Mon, 18 Apr 2005 14:40:21 -0400
 
 hdparm (6.1-7) unstable; urgency=low
 
@@ -232,6 +423,12 @@ hdparm (6.0-1) unstable; urgency=low
 
  -- Stephen Gran <sgran@debian.org>  Sat, 16 Apr 2005 12:36:14 -0400
 
+hdparm (5.9-4ubuntu1) breezy; urgency=low
+
+  * Resynchronise with Debian.
+
+ -- Michael Vogt <michael.vogt@ubuntu.com>  Fri, 15 Apr 2005 15:30:28 +0200
+
 hdparm (5.9-4) unstable; urgency=low
 
   * Allow overriding of (rather simple minded) built-in safety checks
@@ -272,6 +469,32 @@ hdparm (5.9-1) unstable; urgency=low
 
  -- Stephen Gran <sgran@debian.org>  Fri,  4 Feb 2005 08:56:57 -0500
 
+hdparm (5.8-1ubuntu4) hoary; urgency=low
+
+  * Force the /etc/dev.d/block/hdparm.dev script to be executable
+    if upgrading from a version older than this one.  dpkg won't
+    touch the mode on this file.
+
+ -- Jeff Bailey <jbailey@ubuntu.com>  Mon, 21 Mar 2005 07:15:54 -0500
+
+hdparm (5.8-1ubuntu3) hoary; urgency=low
+
+  * ensure that the hdparm dev script is +x (Ubuntu: #7829)
+
+ -- Thom May <thom@planetarytramp.net>  Sat, 19 Mar 2005 22:46:43 +0000
+
+hdparm (5.8-1ubuntu2) hoary; urgency=low
+
+  * Add udev script to run hdparm on newly created devices. (Ubuntu: #4356)
+
+ -- Thom May <thom@ubuntu.com>  Mon,  7 Feb 2005 12:50:01 +0000
+
+hdparm (5.8-1ubuntu1) hoary; urgency=low
+
+  * Resynchronise with Debian.
+
+ -- Scott James Remnant <scott@canonical.com>  Sat, 27 Nov 2004 12:47:14 +0000
+
 hdparm (5.8-1) unstable; urgency=low
 
   * New Upstream version
@@ -280,6 +503,12 @@ hdparm (5.8-1) unstable; urgency=low
   * Mention config file in manpage (closes: #272641)
 
  -- Stephen Gran <sgran@debian.org>  Fri, 26 Nov 2004 11:57:13 -0500
+
+hdparm (5.7-1ubuntu1) hoary; urgency=low
+
+  * Resynchronise with Debian.
+
+ -- Thom May <thom@canonical.com>  Wed, 27 Oct 2004 21:40:43 +0100
 
 hdparm (5.7-1) unstable; urgency=low
 
@@ -323,6 +552,25 @@ hdparm (5.5-5) unstable; urgency=low
     patch)
 
  -- Stephen Gran <sgran@debian.org>  Sun, 15 Aug 2004 22:48:29 -0400
+
+hdparm (5.5-4ubuntu3) warty; urgency=low
+
+  * Added versioned depend on lsb-base
+
+ -- Nathaniel McCallum <npmccallum@canonical.com>  Fri,  3 Sep 2004 14:54:30 -0400
+
+hdparm (5.5-4ubuntu2) warty; urgency=low
+
+  * debian/hdparm.init: pretty initscript
+
+ -- Nathaniel McCallum <npmccallum@canonical.com>  Fri,  3 Sep 2004 10:46:32 -0400
+
+hdparm (5.5-4ubuntu1) warty; urgency=low
+
+  * Create a udeb so that we can tune disk (especially CD-ROM) parameters in
+    d-i.
+
+ -- Colin Watson <cjwatson@flatline.org.uk>  Mon, 16 Aug 2004 00:21:30 +0100
 
 hdparm (5.5-4) unstable; urgency=low
 
@@ -573,3 +821,4 @@ hdparm (3.1-2) unstable; urgency=low
   * Upgrade to 3.1.  Change to "Package format of the month"(TM)
 
  -- Steve Dunham <dunham@gdl.msu.edu>  Thu, 10 Oct 1996 19:51:22 -0800
+
