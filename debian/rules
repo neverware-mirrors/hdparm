@@ -18,6 +18,7 @@
 # 02111-1307 USA.
 
 DEB_DH_INSTALLINIT_ARGS := --no-start --noscripts --onlyscripts
+DEB_DH_INSTALLUDEV_ARGS := --priority=85
 #DEB_DH_LINK_ARGS := ../init.d/hdparm /etc/rcS.d/S07hdparm.first
 DEB_FIXPERMS_EXCLUDE:= 20hdparm
 
@@ -30,7 +31,6 @@ DEB_MAKE_INSTALL_TARGET := install DESTDIR=$(CURDIR)/debian/tmp
 common-install-prehook-arch::
 	install -d $(CURDIR)/debian/tmp/sbin
 common-binary-post-install-arch::
-	install -m 644 $(CURDIR)/debian/hdparm.rules $(CURDIR)/debian/hdparm/etc/udev/rules.d/85-hdparm.rules
 	install -m 755 $(CURDIR)/debian/hdparm.udev-script $(CURDIR)/debian/hdparm/lib/udev/hdparm
 binary-predeb/hdparm::
 	chmod 755 $(CURDIR)/debian/hdparm/etc/apm/event.d/20hdparm

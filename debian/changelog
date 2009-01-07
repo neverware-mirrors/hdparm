@@ -1,3 +1,14 @@
+hdparm (8.9-3ubuntu2) jaunty; urgency=low
+
+  * Update for new udev rules location.
+  * debian/hdparm.rules: Rename to debian/hdparm.udev so dh_installudev
+    can pick it up.
+  * debian/rules: pass --priority=85 to dh_installudev, remove hand-install.
+  * debian/hdparm.dirs: no need for /etc/udev/rules.d
+  * debian/control: bump dependencies on debhelper and cdbs
+
+ -- Scott James Remnant <scott@ubuntu.com>  Wed, 07 Jan 2009 10:15:55 +0000
+
 hdparm (8.9-3ubuntu1) jaunty; urgency=low
 
   * Merge from debian unstable, remaining changes: LP: #313451
