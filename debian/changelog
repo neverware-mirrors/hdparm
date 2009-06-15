@@ -1,3 +1,28 @@
+hdparm (9.15-1ubuntu1) karmic; urgency=low
+
+  * Merge from debian unstable (LP: #311451), remaining changes:
+    + debian/control:
+      - Do not depend on lsb-base (we no longer use init script)
+      - Add Homepage
+      - Add Breaks on old udev
+      - Bump debhelper depends for dh_installudev changes
+    + debian/hdparm.install, debian/hpdarm.udev:
+      - Use hpdarm.udev instead of .rules
+    + debian/hpdarm.dirs:
+      - Drop unused /etc/udev/rules.d, add lib/udev for our udev-script
+    + debian/rules, debian/hdparm.udev-script:
+      - Install udev-script, drop init file stuff
+      - Pass --priority=85 to dh_installudev
+
+ -- Michael Terry <michael.terry@canonical.com>  Mon, 15 Jun 2009 09:44:02 -0400
+
+hdparm (9.15-1) unstable; urgency=low
+
+  * New upstream version (closes: #505284)
+  * opens devices with O_RDONLY (closes: #522091, #526516)
+
+ -- Stephen Gran <sgran@debian.org>  Sat, 13 Jun 2009 00:45:36 +0100
+
 hdparm (8.9-3ubuntu3) jaunty; urgency=low
 
   * Add Breaks to ensure the right version of udev is used.
@@ -855,4 +880,3 @@ hdparm (3.1-2) unstable; urgency=low
   * Upgrade to 3.1.  Change to "Package format of the month"(TM)
 
  -- Steve Dunham <dunham@gdl.msu.edu>  Thu, 10 Oct 1996 19:51:22 -0800
-
