@@ -9,29 +9,38 @@ enum {
 	ATA_OP_READ_LONG_ONCE		= 0x23,
 	ATA_OP_READ_PIO_EXT		= 0x24,
 	ATA_OP_READ_DMA_EXT		= 0x25,
+	ATA_OP_READ_FPDMA		= 0x60,	// NCQ
 	ATA_OP_WRITE_PIO		= 0x30,
 	ATA_OP_WRITE_LONG		= 0x32,
 	ATA_OP_WRITE_LONG_ONCE		= 0x33,
 	ATA_OP_WRITE_PIO_EXT		= 0x34,
 	ATA_OP_WRITE_DMA_EXT		= 0x35,
+	ATA_OP_WRITE_FPDMA		= 0x61,	// NCQ
+	ATA_OP_READ_VERIFY		= 0x40,
 	ATA_OP_READ_VERIFY_ONCE		= 0x41,
+	ATA_OP_READ_VERIFY_EXT		= 0x42,
 	ATA_OP_WRITE_UNC_EXT		= 0x45,	// lba48, no data, uses feat reg
+	ATA_OP_FORMAT_TRACK		= 0x50,
+	ATA_OP_DOWNLOAD_MICROCODE	= 0x92,
 	ATA_OP_STANDBYNOW2		= 0x94,
-	ATA_OP_SETIDLE2			= 0x97,
 	ATA_OP_CHECKPOWERMODE2		= 0x98,
 	ATA_OP_SLEEPNOW2		= 0x99,
 	ATA_OP_PIDENTIFY		= 0xa1,
 	ATA_OP_READ_NATIVE_MAX		= 0xf8,
 	ATA_OP_READ_NATIVE_MAX_EXT	= 0x27,
 	ATA_OP_SMART			= 0xb0,
+	ATA_OP_DCO			= 0xb1,
+	ATA_OP_ERASE_SECTORS		= 0xc0,
 	ATA_OP_READ_DMA			= 0xc8,
 	ATA_OP_WRITE_DMA		= 0xca,
 	ATA_OP_DOORLOCK			= 0xde,
 	ATA_OP_DOORUNLOCK		= 0xdf,
 	ATA_OP_STANDBYNOW1		= 0xe0,
-	ATA_OP_SETIDLE1			= 0xe3,
+	ATA_OP_IDLEIMMEDIATE		= 0xe1,
+	ATA_OP_SETIDLE			= 0xe3,
 	ATA_OP_SET_MAX			= 0xf9,
 	ATA_OP_SET_MAX_EXT		= 0x37,
+	ATA_OP_SET_MULTIPLE		= 0xc6,
 	ATA_OP_CHECKPOWERMODE1		= 0xe5,
 	ATA_OP_SLEEPNOW1		= 0xe6,
 	ATA_OP_FLUSHCACHE		= 0xe7,
@@ -104,8 +113,9 @@ enum {
 	TASKFILE_DPHASE_PIO_OUT	= 4,	/* ide: TASKFILE_OUT */
 };
 
-union reg_flags {
-	unsigned all			:16;
+struct reg_flags {
+	union {
+	unsigned lob_all		: 8;
 	struct {
 		unsigned data		: 1;
 		unsigned feat		: 1;
@@ -115,16 +125,21 @@ union reg_flags {
 		unsigned lbah		: 1;
 		unsigned dev		: 1;
 		unsigned command	: 1;
-
-		unsigned hob_data	: 1;
-		unsigned hob_feat	: 1;
-		unsigned hob_lbal	: 1;
-		unsigned hob_nsect	: 1;
-		unsigned hob_lbam	: 1;
-		unsigned hob_lbah	: 1;
-		unsigned hob_dev	: 1;
-		unsigned hob_command	: 1;
-	} b;
+	} lob;
+	};
+	union {
+	unsigned hob_all		: 8;
+	struct {
+		unsigned data		: 1;
+		unsigned feat		: 1;
+		unsigned lbal		: 1;
+		unsigned nsect		: 1;
+		unsigned lbam		: 1;
+		unsigned lbah		: 1;
+		unsigned dev		: 1;
+		unsigned command	: 1;
+	} hob;
+	};
 };
 
 struct taskfile_regs {
@@ -141,8 +156,8 @@ struct taskfile_regs {
 struct hdio_taskfile {
 	struct taskfile_regs	lob;
 	struct taskfile_regs	hob;
-	union reg_flags		oflags;
-	union reg_flags		iflags;
+	struct reg_flags	oflags;
+	struct reg_flags	iflags;
 	int			dphase;
 	int			cmd_req;     /* IDE command_type */
 	unsigned long		obytes;
@@ -185,11 +200,17 @@ struct scsi_sg_io_hdr {
 #define SG_READ			0
 #define SG_WRITE		1
 
+#define SG_PIO			0
+#define SG_DMA			1
+
 #define SG_CHECK_CONDITION	0x02
 #define SG_DRIVER_SENSE		0x08
 
 #define SG_ATA_16		0x85
 #define SG_ATA_16_LEN		16
+
+#define SG_ATA_12		0xa1
+#define SG_ATA_12_LEN		12
 
 #define SG_ATA_LBA48		1
 #define SG_ATA_PROTO_NON_DATA	( 3 << 1)
@@ -201,7 +222,7 @@ struct scsi_sg_io_hdr {
 
 void tf_init (struct ata_tf *tf, __u8 ata_op, __u64 lba, unsigned int nsect);
 __u64 tf_to_lba (struct ata_tf *tf);
-int sg16 (int fd, int rw, struct ata_tf *tf, void *data, unsigned int data_bytes, unsigned int timeout_secs);
+int sg16 (int fd, int rw, int dma, struct ata_tf *tf, void *data, unsigned int data_bytes, unsigned int timeout_secs);
 int do_drive_cmd (int fd, unsigned char *args);
 int do_taskfile_cmd (int fd, struct hdio_taskfile *r, unsigned int timeout_secs);
 int dev_has_sgio (int fd);
