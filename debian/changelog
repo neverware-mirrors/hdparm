@@ -1,3 +1,9 @@
+hdparm (9.15-1ubuntu2) karmic; urgency=low
+
+  * Fix crash with -B when HDIO_DRIVE_CMD(identify) fails (LP: #396837).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 14 Jul 2009 14:04:15 +0100
+
 hdparm (9.15-1ubuntu1) karmic; urgency=low
 
   * Merge from debian unstable (LP: #311451), remaining changes:
