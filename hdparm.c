@@ -1822,14 +1822,16 @@ void process_dev (char *devname)
 	}
 	if (get_apmmode) {
 		id = get_identify_data(fd, id);
-		printf(" APM_level	= ");
-		if((id[83] & 0xc008) == 0x4008) {
-			if (id[86] & 0x0008)
-				printf("%u\n", id[91] & 0xff);
-			else
-				printf("off\n");
-		} else
-			printf("not supported\n");
+		if (id) {
+			printf(" APM_level	= ");
+			if((id[83] & 0xc008) == 0x4008) {
+				if (id[86] & 0x0008)
+					printf("%u\n", id[91] & 0xff);
+				else
+					printf("off\n");
+			} else
+				printf("not supported\n");
+		}
 	}
 	if (get_acoustic) {
 		id = get_identify_data(fd, id);
