@@ -39,6 +39,11 @@ if [ "$1" = install ] || [ "$1" = upgrade ]; then
       fi
     fi
   fi
+  if dpkg --compare-versions "$2" le-nl 9.15-1ubuntu3; then
+      if [ -L /etc/udev/rules.d/z60_hdparm.rules ]; then
+	  rm -f /etc/udev/rules.d/z60_hdparm.rules
+      fi
+  fi
 fi
 
 #DEBHELPER#
