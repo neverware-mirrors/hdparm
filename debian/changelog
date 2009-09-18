@@ -1,3 +1,13 @@
+hdparm (9.15-1ubuntu3) karmic; urgency=low
+
+  * debian/hdparm.postinst: The transitional code to create
+    /etc/udev/rules.d/z60_hdparm.rules also got wrongly executed on new
+    installs, leaving a broken symlink behind. However, we do not need this in
+    the first place, so just throw away the code completely.
+  * debian/hdparm.preinst: Remove broken symlink on upgrade.
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Fri, 18 Sep 2009 12:49:04 +0200
+
 hdparm (9.15-1ubuntu2) karmic; urgency=low
 
   * Fix crash with -B when HDIO_DRIVE_CMD(identify) fails (LP: #396837).
