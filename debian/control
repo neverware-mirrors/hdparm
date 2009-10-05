@@ -10,6 +10,7 @@ Homepage: http://sourceforge.net/projects/hdparm/
 Package: hdparm
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Recommends: powermgmt-base
 Suggests: apmd
 Replaces: apmd (<= 3.0.2-1.15)
 Breaks: udev (<< 136-1)

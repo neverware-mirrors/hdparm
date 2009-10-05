@@ -1,3 +1,18 @@
+hdparm (9.15-1ubuntu4) karmic; urgency=low
+
+  * Recommend powermgmt-base, so we can use on_ac_power to detect if we're on
+    battery.
+  * Add a new option to hdparm.conf, apm_battery, which is used in place of
+    apm when we detect that we're on battery power.
+  * debian/hdparm.udev-script, debian/hdparm.init: only use the 'apm' setting
+    when we're not on battery; when we are on battery, apply the separate
+    'apm_battery' setting.
+  * debian/hdparm-functions: break out a barebones parser for
+    /etc/hdparm.conf and install it to /usr/lib/pm-utils, for use in
+    /usr/lib/pm-utils/sleep.d/95hdparm-apm.  LP: #238555.
+
+ -- Steve Langasek <steve.langasek@ubuntu.com>  Mon, 05 Oct 2009 22:57:20 +0000
+
 hdparm (9.15-1ubuntu3) karmic; urgency=low
 
   * debian/hdparm.postinst: The transitional code to create

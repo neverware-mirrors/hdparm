@@ -95,6 +95,11 @@ undo_slow_down_raid_sync()
   fi
 }
 
+isOnBattery() {
+	on_ac_power 2>/dev/null
+	[ $? -eq 1 ]
+}
+
 set_option()
 {
   if test -n "$DISC"; then
@@ -196,8 +201,15 @@ egrep -v '^[[:space:]]*(#|$)' /etc/hdparm.conf |
             bus) 
               eval_value $VALUE -b
               ;;
-            apm) 
-              set_option -B$VALUE
+            apm)
+              if ! isOnBattery; then
+                  set_option -B$VALUE
+              fi
+              ;;
+            apm_battery)
+              if isOnBattery; then
+                  set_option -B$VALUE
+              fi
               ;;
             io32_support) 
               set_option -c$VALUE
