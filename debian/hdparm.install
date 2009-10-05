@@ -10,3 +10,4 @@ contrib/idectl		usr/share/doc/hdparm/contrib
 contrib/README		usr/share/doc/hdparm/contrib
 contrib/ultrabayd	usr/share/doc/hdparm/contrib
 debian/hdparm.conf	etc/
+debian/hdparm-functions	usr/lib/pm-utils/

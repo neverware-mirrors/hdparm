@@ -1,0 +1,91 @@
+#!/bin/sh
+
+hdparm_is_on_battery() {
+    on_ac_power 2>/dev/null
+    [ $? -eq 1 ]
+}
+
+# query /etc/hdparm.conf for the apm (-B) option to use for the named
+# drive, taking into account system defaults and current AC power status,
+# and return the numeric value on standard out
+# arguments: devicename, in traditional /dev/sd? format
+# output: numeric value suitable for passing to hdparm -B
+# returns: 0, or causes the caller to exit non-zero on parse error
+hdparm_apm_option_for_disk()
+{
+    local WANTED_DISK="$1"
+    local DISC=
+    local OPTION=
+    local DEFAULT=
+
+    egrep -v '^[[:space:]]*(#|$)' /etc/hdparm.conf | 
+    {
+        while read KEY SEP VALUE; do
+            case $SEP in
+                '{')
+                    case $KEY in
+                        *)
+                            DISC=$KEY
+                            ;;
+                    esac
+                    ;;
+                =)
+                    case $KEY in
+                        apm)
+                            if ! hdparm_is_on_battery; then
+                                if [ "$WANTED_DISK" = "$DISC" ]; then
+                                    OPTION="$VALUE"
+                                elif [ -z "$DISC" ]; then
+                                    DEFAULT="$VALUE"
+                                fi
+                            fi
+                            ;;
+                        apm_battery)
+                            if hdparm_is_on_battery; then
+                                if [ "$WANTED_DISK" = "$DISC" ]; then
+                                    OPTION="$VALUE"
+                                elif [ -z "$DISC" ]; then
+                                    DEFAULT="$VALUE"
+                                fi
+                            fi
+                            ;;
+                        *)
+                            # ignore.
+                            ;;
+                    esac
+                    ;;
+                "")
+                    case $KEY in
+                        '}')
+                            if [ -z "$DISC" ]; then
+                                log "hdparm-functions: No disk enabled. Exiting"
+                                exit 1
+                            fi
+                            ;;
+                        quiet|standby|sleep|disable_seagate|security_freeze)
+                            ;;
+                        *)
+                            log "unknown option $KEY"
+                            exit 1
+                            ;;
+                    esac
+                    ;;
+                *)
+                    log "unknown separator $SEP"
+                    exit 1
+                    ;;
+            esac
+        done
+        if [ -z "$OPTION" ]; then
+            OPTION="$DEFAULT"
+        fi
+        if [ -z "$OPTION" ]; then
+            if hdparm_is_on_battery; then
+                OPTION="128"
+            else
+                OPTION="254"
+            fi
+        fi
+        echo $OPTION
+    }
+}
