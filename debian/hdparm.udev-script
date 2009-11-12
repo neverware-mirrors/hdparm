@@ -211,7 +211,6 @@ egrep -v '^[[:space:]]*(#|$)' /etc/hdparm.conf |
                 ret=0
                 if [ "$IN_BLOCK" = 1 ]; then
                   # Flush the drive's internal write cache to the disk.
-                  /sbin/hdparm -q -f $DISC 2>/dev/null || ret=$?
                   /sbin/hdparm $OPTIONS $DISC 2>/dev/null || ret=$?
                 fi
               fi       
