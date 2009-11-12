@@ -1,3 +1,11 @@
+hdparm (9.15-1ubuntu5) lucid; urgency=low
+
+  * debian/hdparm.init, debian/hdparm.udev-script: Don't call hdparm -f for
+    every drive; no clear rationale was ever given for doing this, and doing
+    so slows down hard drive access at boot time.
+
+ -- Steve Langasek <steve.langasek@ubuntu.com>  Thu, 12 Nov 2009 13:08:24 +0000
+
 hdparm (9.15-1ubuntu4) karmic; urgency=low
 
   * Recommend powermgmt-base, so we can use on_ac_power to detect if we're on
