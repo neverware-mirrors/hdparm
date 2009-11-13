@@ -1,3 +1,19 @@
+hdparm (9.15-1ubuntu6) lucid; urgency=low
+
+  * debian/hdparm.init, debian/hdparm.udev-script: also don't call sync...
+  * debian/hdparm-functions: refactor so that it can be used by the udev
+    script as well
+    - drop handling of "command_line" here - we shouldn't be running this
+      for every hard drive and every power event, this should be supported
+      only by an init script (if at all)
+  * debian/hdparm.install: move hdparm-functions to /lib/hdparm.
+  * debian/hdparm.udev-script: refactor to use the above functions instead of
+    embedding a parser.  LP: #321219.
+  * debian/control: declare a Breaks: on pm-utils (<< 1.2.5-2ubuntu8), due to
+    the change of the hdparm-functions API.
+
+ -- Steve Langasek <steve.langasek@ubuntu.com>  Fri, 13 Nov 2009 09:38:52 +0000
+
 hdparm (9.15-1ubuntu5) lucid; urgency=low
 
   * debian/hdparm.init, debian/hdparm.udev-script: Don't call hdparm -f for

@@ -13,7 +13,7 @@ Depends: ${shlibs:Depends}, ${misc:Depends}
 Recommends: powermgmt-base
 Suggests: apmd
 Replaces: apmd (<= 3.0.2-1.15)
-Breaks: udev (<< 136-1)
+Breaks: udev (<< 136-1), pm-utils (<< 1.2.5-2ubuntu8)
 Description: tune hard disk parameters for high performance
  Get/set device parameters for Linux SATA/IDE drives.
  Primary use is for enabling irq-unmasking and IDE multiplemode.
