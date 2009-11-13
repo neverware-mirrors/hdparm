@@ -148,9 +148,6 @@ if [ "$raidstat" != 'OK' ] && [ "$RAID_WORKAROUND" = "yes" ]; then
   slow_down_raid_sync
 fi
 
-# Get blocks as far as the drive's write cache.
-/bin/sync
-
 [ "$UDEV" = 'yes' ] || log_daemon_msg "Setting parameters of disc"
 
 DISC=
