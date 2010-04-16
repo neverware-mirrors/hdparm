@@ -61,11 +61,20 @@ hdparm_options()
     egrep -v '^[[:space:]]*(#|$)' /etc/hdparm.conf |
     {
         # set our default global apm policy here.
-        if hdparm_is_on_battery; then
-            hdparm_set_option -B128
-        else
-            hdparm_set_option -B254
-        fi
+        case $ID_PATH in
+            pci-*-ieee1394-*|pci-*-usb-*)
+                # Don't apply default APM policy for Firewire or USB devices
+                # when running from udev.  See
+                # https://bugs.launchpad.net/bugs/515023.
+                ;;
+            *)
+                if hdparm_is_on_battery; then
+                    hdparm_set_option -B128
+                else
+                    hdparm_set_option -B254
+                fi
+                ;;
+        esac
 
         while read KEY SEP VALUE; do
             case $SEP in
