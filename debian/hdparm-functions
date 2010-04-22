@@ -43,6 +43,22 @@ hdparm_eval_value()
   esac
 }
 
+# It isn't safe to set an APM policy by default on Firewire or USB devices.
+# See https://bugs.launchpad.net/bugs/515023.
+hdparm_try_apm()
+{
+    # set our default global apm policy here.
+    if [ -z "$ID_PATH" ]; then
+        local ID_PATH="$(udevadm info -n "$1" -q property 2>/dev/null | sed -n 's/^ID_PATH=//p')" || true
+    fi
+    case $ID_PATH in
+        pci-*-ieee1394-*|pci-*-usb-*)
+            return 1
+            ;;
+    esac
+    return 0
+}
+
 # parse /etc/hdparm.conf and spit out a list of options for the specified
 # disk, taking into account global settings in /etc/hdparm.conf, current AC
 # power status, and (as a fallback) the default apm settings on Ubuntu.
@@ -61,20 +77,13 @@ hdparm_options()
     egrep -v '^[[:space:]]*(#|$)' /etc/hdparm.conf |
     {
         # set our default global apm policy here.
-        case $ID_PATH in
-            pci-*-ieee1394-*|pci-*-usb-*)
-                # Don't apply default APM policy for Firewire or USB devices
-                # when running from udev.  See
-                # https://bugs.launchpad.net/bugs/515023.
-                ;;
-            *)
-                if hdparm_is_on_battery; then
-                    hdparm_set_option -B128
-                else
-                    hdparm_set_option -B254
-                fi
-                ;;
-        esac
+        if hdparm_try_apm "$WANTED_DISK"; then
+            if hdparm_is_on_battery; then
+                hdparm_set_option -B128
+            else
+                hdparm_set_option -B254
+            fi
+        fi
 
         while read KEY SEP VALUE; do
             case $SEP in

@@ -1,3 +1,12 @@
+hdparm (9.15-1ubuntu9) lucid; urgency=low
+
+  * Fetch ID_PATH from 'udevadm info' if it isn't already set in the
+    environment (LP: #567182).
+  * Factor Firewire/USB check out into a new hdparm_try_apm function.
+  * debian/95hdparm-apm: Skip Firewire and USB devices.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu, 22 Apr 2010 17:35:22 +0100
+
 hdparm (9.15-1ubuntu8) lucid; urgency=low
 
   * Don't apply default APM policy to Firewire or USB devices when running

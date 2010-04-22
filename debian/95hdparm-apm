@@ -33,7 +33,7 @@ resume_hdparm_apm()
 	fi
 
 	for dev in /dev/sd? /dev/hd? ; do
-		if [ -b $dev ] ; then
+		if [ -b $dev ] && hdparm_try_apm $dev ; then
 			# Check for APM support; discard errors since not all
 			# drives support HDIO_GET_IDENTITY (-i).
 			if hdparm -i $dev 2> /dev/null | grep -q 'AdvancedPM=yes'
