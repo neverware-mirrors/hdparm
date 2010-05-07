@@ -17,9 +17,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 # 02111-1307 USA.
 
-DEB_DH_INSTALLINIT_ARGS := '--no-start'
+DEB_DH_INSTALLINIT_ARGS := --no-start --noscripts --onlyscripts
+DEB_DH_INSTALLUDEV_ARGS := --priority=85
 #DEB_DH_LINK_ARGS := ../init.d/hdparm /etc/rcS.d/S07hdparm.first
-DEB_UPDATE_RCD_PARAMS := 'start 07 S . '
 DEB_FIXPERMS_EXCLUDE:= 20hdparm
 
 include /usr/share/cdbs/1/rules/debhelper.mk
@@ -29,5 +29,8 @@ DEB_MAKE_INSTALL_TARGET := install DESTDIR=$(CURDIR)/debian/tmp
 
 common-install-prehook-arch::
 	install -d $(CURDIR)/debian/tmp/sbin
+common-binary-post-install-arch::
+	install -m 755 $(CURDIR)/debian/hdparm.udev-script $(CURDIR)/debian/hdparm/lib/udev/hdparm
+	install -D -m 755 $(CURDIR)/debian/95hdparm-apm $(CURDIR)/debian/hdparm//usr/lib/pm-utils/power.d/95hdparm-apm
 binary-predeb/hdparm::
 	chmod 755 $(CURDIR)/debian/hdparm/etc/apm/event.d/20hdparm
