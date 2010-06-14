@@ -1,3 +1,11 @@
+hdparm (9.27-2ubuntu2) maverick; urgency=low
+
+  * debian/hdparm.conf, debian/hdparm.conf.5: drop 'command_line' example
+    from the default hdparm.conf since it's no longer supported, and update
+    the manpage to match.  LP: #568120.    
+
+ -- Steve Langasek <steve.langasek@ubuntu.com>  Mon, 14 Jun 2010 14:47:50 -0700
+
 hdparm (9.27-2ubuntu1) maverick; urgency=low
 
   * Merge from Debian unstable (LP: #516249); remaining changes:
