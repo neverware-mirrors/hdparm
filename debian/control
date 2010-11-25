@@ -1,15 +1,19 @@
 Source: hdparm
 Section: admin
 Priority: optional
-Maintainer: Stephen Gran <sgran@debian.org>
-Build-Depends: cdbs (>> 0.4.37), debhelper (>= 5.0), dpkg-dev (>= 1.13.19)
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+XSBC-Original-Maintainer: Stephen Gran <sgran@debian.org>
+Build-Depends: cdbs (>= 0.4.38), debhelper (>= 7.0.17ubuntu2), dpkg-dev (>= 1.13.19)
 Standards-Version: 3.9.1
+Homepage: http://sourceforge.net/projects/hdparm/
 
 Package: hdparm
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, lsb-base
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Recommends: powermgmt-base
 Suggests: apmd
-Replaces: apmd (<= 3.0.2-1.15)
+Replaces: apmd (<= 3.0.2-1.15), pm-utils (<< 1.2.6)
+Breaks: udev (<< 136-1), pm-utils (<< 1.2.5-2ubuntu8)
 Description: tune hard disk parameters for high performance
  Get/set device parameters for Linux SATA/IDE drives.
  Primary use is for enabling irq-unmasking and IDE multiplemode.
