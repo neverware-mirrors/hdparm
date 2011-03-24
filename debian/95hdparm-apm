@@ -40,7 +40,7 @@ resume_hdparm_apm()
 			then
 				for option in $(hdparm_options $dev); do
 					case $option in
-						-B*)
+						-B* | -S*)
 							apm_opt=$option
 							;;
 						*)
