@@ -1,3 +1,11 @@
+hdparm (9.32-1ubuntu3) natty; urgency=low
+
+  * debian/95hdparm-apm: Handle powersaving and suspend separately, and only
+    apply -S settings on resuming, not on powersaving events. Thanks heckheck!
+    (LP: #738757)
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Thu, 31 Mar 2011 18:03:03 +0200
+
 hdparm (9.32-1ubuntu2) natty; urgency=low
 
   * debian/95hdparm-apm: Also handle -S option from /etc/hdparm.conf. (side
