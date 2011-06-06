@@ -35,7 +35,7 @@ static int    num_flags_processed = 0;
 
 extern const char *minor_str[];
 
-#define VERSION "v9.32"
+#define VERSION "v9.37"
 
 #ifndef O_DIRECT
 #define O_DIRECT	040000	/* direct disk access, not easily obtained from headers */
@@ -47,15 +47,6 @@ extern const char *minor_str[];
 
 #define TIMING_BUF_MB		2
 #define TIMING_BUF_BYTES	(TIMING_BUF_MB * 1024 * 1024)
-
-#ifndef ATA_OP_SECURITY_FREEZE_LOCK
-	#define ATA_OP_SECURITY_SET_PASS	0xF1
-	#define ATA_OP_SECURITY_UNLOCK		0xF2
-	#define ATA_OP_SECURITY_ERASE_PREPARE	0xF3
-	#define ATA_OP_SECURITY_ERASE_UNIT	0xF4
-	#define ATA_OP_SECURITY_FREEZE_LOCK	0xF5
-	#define ATA_OP_SECURITY_DISABLE		0xF6
-#endif
 
 char *progname;
 int verbose = 0;
@@ -865,10 +856,9 @@ static void get_identify_data (int fd)
 	args[3] = 1;	/* sector count */
 	if (do_drive_cmd(fd, args, 0)) {
 		prefer_ata12 = 0;
+		memset(args, 0, sizeof(args));
 		last_identify_op = ATA_OP_PIDENTIFY;
 		args[0] = last_identify_op;
-		args[1] = 0;
-		args[2] = 0;
 		args[3] = 1;	/* sector count */
 		if (do_drive_cmd(fd, args, 0)) {
 			perror(" HDIO_DRIVE_CMD(identify) failed");
@@ -945,11 +935,13 @@ static int abort_if_not_full_device (int fd, __u64 lba, const char *devname, con
 
 	if (start_lba == 0ULL)
 		return 0;
-	if (msg) {
+	if (start_lba == START_LBA_UNKNOWN || fd_is_raid(fd)) {
+		fprintf(stderr, "%s is a RAID device: please specify an absolute LBA of a raw member device instead (raid1 only)\n", devname);
+	} else if (msg) {
 		fprintf(stderr, "%s\n", msg);
 	} else {
 		fprintf(stderr, "Device %s has non-zero LBA starting offset of %llu.\n", devname, start_lba);
-		fprintf(stderr, "Please use an absolute LBA with the /dev/ entry for the full device, rather than a partition name.\n");
+		fprintf(stderr, "Please use an absolute LBA with the /dev/ entry for the raw device, rather than a partition or raid name.\n");
 		fprintf(stderr, "%s is probably a partition of %s (?)\n", devname, fdevname);
 		fprintf(stderr, "The absolute LBA of sector %llu from %s should be %llu\n", lba, devname, start_lba + lba);
 	}
@@ -1249,7 +1241,7 @@ extract_id_string (__u16 *idw, int words, char *dst)
 
 	for (i = 0; i < words; ++i) {
 		__u16 w = idw[i];
-		w = (__u16)(__be16)(w);
+		w = __be16_to_cpu(w);
 		dst[i*2  ] = w >> 8;
 		dst[i*2+1] = w;
 	}
@@ -1485,7 +1477,7 @@ static void usage_help (int clue, int rc)
 	" -P   Set drive prefetch count\n"
 	" -q   Change next setting quietly\n"
 	" -Q   Get/set DMA queue_depth (if supported)\n"
-	" -r   Get/set device  readonly flag (DANGEROUS to set)\n"
+	" -r   Get/set device readonly flag (DANGEROUS to set)\n"
 	" -R   Obsolete\n"
 	" -s   Set power-up in standby flag (0/1) (DANGEROUS)\n"
 	" -S   Set standby (spindown) timeout\n"
@@ -1722,7 +1714,7 @@ void process_dev (char *devname)
 		}
 	}
 	if (set_defects) {
-		__u8 args[4] = {ATA_OP_SETFEATURES,0,0x04,0};
+		__u8 args[4] = {ATA_OP_SETFEATURES,0,0,0};
 		args[2] = defects ? 0x04 : 0x84;
 		if (get_defects)
 			printf(" setting drive defect management to %d\n", defects);
@@ -2149,9 +2141,13 @@ void process_dev (char *devname)
 		__u32 cyls = 0, heads = 0, sects = 0;
 		__u64 start_lba = 0, nsectors = 0;
 		err = get_dev_geometry (fd, &cyls, &heads, &sects, &start_lba, &nsectors);
-		if (!err)
-			printf(" geometry      = %u/%u/%u, sectors = %lld, start = %lld\n",
-				cyls, heads, sects, nsectors, start_lba);
+		if (!err) {
+			printf(" geometry      = %u/%u/%u, sectors = %lld, start = ", cyls, heads, sects, nsectors);
+			if (start_lba == START_LBA_UNKNOWN)
+				printf("unknown\n");
+			else
+				printf("%lld\n", start_lba);
+		}
 	}
 	if (get_powermode) {
 		__u8 args[4] = {ATA_OP_CHECKPOWERMODE1,0,0,0};
