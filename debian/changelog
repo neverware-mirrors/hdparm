@@ -1,3 +1,10 @@
+hdparm (9.37-0ubuntu1) oneiric; urgency=low
+
+  * New upstream version (LP: #793660)
+    - Really fix -B flag / IDENTIFY cdb
+
+ -- Roland Dreier <roland@digitalvampire.org>  Mon, 06 Jun 2011 13:34:41 -0700
+
 hdparm (9.32-1ubuntu3) natty; urgency=low
 
   * debian/95hdparm-apm: Handle powersaving and suspend separately, and only
