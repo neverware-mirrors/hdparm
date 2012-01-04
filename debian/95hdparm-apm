@@ -1,9 +1,9 @@
 #! /bin/sh
 #
 # This script adjusts hard drive APM settings using hdparm. The hardware
-# defaults (usually hdparm -B 128) cause excessive head load/unload cycles
+# defaults (usually hdparm -B 127) cause excessive head load/unload cycles
 # on many modern hard drives. We therefore set hdparm -B 254 while on AC
-# power. On battery we set hdparm -B 128, because the head parking is
+# power. On battery we set hdparm -B 127, because the head parking is
 # very useful for shock protection.
 #
 # Refactored from acpi-support's 90-hdparm.sh for pm-utils

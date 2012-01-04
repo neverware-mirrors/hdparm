@@ -1,3 +1,13 @@
+hdparm (9.37-0ubuntu2) precise; urgency=low
+
+  * debian/hdparm-functions, debian/95hdparm-apm, debian/hdparm.conf.5: if we
+    really want disk policy to allow spinning down on battery, we need to set
+    -B *127*, not -B 128.  The comments in the historical pm-utils script
+    make it clear that this was the intent all along.  Thanks to Anmar Oueja
+    for catching this!
+
+ -- Steve Langasek <steve.langasek@ubuntu.com>  Wed, 04 Jan 2012 13:57:57 -0800
+
 hdparm (9.37-0ubuntu1) oneiric; urgency=low
 
   * New upstream version (LP: #793660)
