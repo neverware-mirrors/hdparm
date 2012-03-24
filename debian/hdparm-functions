@@ -80,6 +80,10 @@ hdparm_options()
         if hdparm_try_apm "$WANTED_DISK"; then
             if hdparm_is_on_battery; then
                 hdparm_set_option -B127
+                # we allow spindown, but set a spindown time of 3 minutes by
+                # default so the disk isn't constantly power cycling on a busy
+                # machine
+                hdparm_set_option -S36
             else
                 hdparm_set_option -B254
             fi

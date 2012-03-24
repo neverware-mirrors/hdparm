@@ -1,3 +1,11 @@
+hdparm (9.37-0ubuntu3) precise; urgency=low
+
+  * debian/hdparm-functions: if we're going to set -B127 on battery, we
+    should also set a sane (not too low) spindown time, to avoid wearing out
+    disks.  LP: #952556.
+
+ -- Steve Langasek <steve.langasek@ubuntu.com>  Sat, 24 Mar 2012 03:06:35 -0700
+
 hdparm (9.37-0ubuntu2) precise; urgency=low
 
   * debian/hdparm-functions, debian/95hdparm-apm, debian/hdparm.conf.5: if we
