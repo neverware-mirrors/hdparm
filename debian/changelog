@@ -1,3 +1,13 @@
+hdparm (9.37-0ubuntu4) quantal; urgency=low
+
+  * debian/hdparm-functions, debian/95hdparm-apm: set our spindown policy
+    back to -B128 instead of -B127.  Too many drives misbehave too badly
+    with this setting, possibly leading to drive failure.  We should revisit
+    this once we understand why people's drives are spinning back *up* so
+    frequently.  LP: #952556.
+
+ -- Steve Langasek <steve.langasek@ubuntu.com>  Mon, 30 Apr 2012 23:04:05 -0700
+
 hdparm (9.37-0ubuntu3) precise; urgency=low
 
   * debian/hdparm-functions: if we're going to set -B127 on battery, we
