@@ -1,3 +1,10 @@
+hdparm (9.42-1ubuntu2) raring; urgency=low
+
+  * Set DEB_MAKE_ENVVARS differently in order to take advantage of
+    cross-building support in cdbs.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Sat, 01 Dec 2012 02:18:26 +0000
+
 hdparm (9.42-1ubuntu1) raring; urgency=low
 
   * Merge from Debian unstable:
