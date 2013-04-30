@@ -1,3 +1,11 @@
+hdparm (9.43-1ubuntu2) saucy; urgency=low
+
+  * hdparm.c, identify.c, sgio.h: import patch from
+    http://sourceforge.net/p/hdparm/patches/35/ to add support to 'hdparm -I'
+    for reporting DevSleep information.  LP: #1031173.
+
+ -- Steve Langasek <steve.langasek@ubuntu.com>  Tue, 30 Apr 2013 08:58:10 -0700
+
 hdparm (9.43-1ubuntu1) raring; urgency=low
 
   * Resynchronise with Debian.  Remaining changes:
