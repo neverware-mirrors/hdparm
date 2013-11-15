@@ -1,3 +1,10 @@
+hdparm (9.43-1ubuntu3) trusty; urgency=low
+
+  * debian/95hdparm-apm: reset apm_opt variable thanks to Ivan Lucchese for
+    the patch (LP: #1248012)
+
+ -- Brian Murray <brian@ubuntu.com>  Fri, 15 Nov 2013 13:46:16 -0800
+
 hdparm (9.43-1ubuntu2) saucy; urgency=low
 
   * hdparm.c, identify.c, sgio.h: import patch from
