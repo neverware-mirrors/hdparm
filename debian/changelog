@@ -1,3 +1,55 @@
+hdparm (9.48+ds-1) unstable; urgency=medium
+
+  [ Alexandre Mestiashvili ]
+  * d/control:
+    - Remove dpkg-dev from Build-Depends
+    - Add Vcs-* fields
+    - Remove -dbg package, -dbgsym is generated automatically
+    - Apply cme fix dpkg
+    - Take over the package. Thanks to Stephen Gran
+      and Michael Meskes for their former work.  Closes: #816168
+    - Update extended description
+  * d/copyright:
+    - Update copyright file to comply with DEP5 standatd
+    - Use File-Excluded: to remove debian/*, contrib/fix-standby
+    - Add copyright statements for third party files
+  * d/rules:
+    - Convert to use debhelper
+    - Drop init script
+    - Do not modify postinst/postrm/prerm scripts
+    - Export additional hardening flags
+  * d/watch:
+    - Remove uupdate
+    - Repack and add +ds suffix because we remove the upstream's debian dir
+  * d/patches:
+    - spelling.patch: Fix typo in hdparm.8
+    - fix_ldflags.patch: Don't hardcode LDFLAGS
+    - quiet_sequrity_freeze.patch: Quiet the output when -q and
+      --security-freeze flags are used, Closes: #512175
+  * Imported Upstream version 9.48+ds, Closes: #706479, #795326
+  * d/hdparm.udev: Don't trigger the udev rule on sd[a-z]*, Closes: #787969
+  * d/source:format: 3.0 (quilt)
+  * d/README.Debian: Warn users about obsoleted information, Closes: #707724
+  * d/hdparm.dirs: Remove, not used
+  * d/95hdparm-apm: Update header information, imported from Ubuntu
+  * d/hdparm.init, d/hdparm.default, d/hdparm.service:
+    Drop init files, use udev scripts, Closes: #796623
+  * Move:
+     - debian/hdparm.udev-script -> debian/udev-scripts/hdparm
+     - debian/systemd-sleep.hook -> debian/systemd-sleep/hdparm
+  * d/hdparm.install: Install systemd sleep and udev scripts,
+    thanks to Michael Biebl, Closes: #725284
+  * d/hdparm.postinst: Call update-rc.d hdparm remove as we dropped
+    the init scripts, remove obsoleted part
+  * d/hdparm.preinst: Remove obsoleted parts
+  * d/hdparm.postrm: Remove, not needed with current versions in Debian
+  * d/hdparm.maintscript: Remove obsoleted conffiles
+
+  [ Raphaël Hertzog ]
+  * Cleanup code to unregister the old init script.
+
+ -- Alexandre Mestiashvili <alex@biotec.tu-dresden.de>  Tue, 08 Mar 2016 12:05:51 +0100
+
 hdparm (9.43-2) unstable; urgency=medium
 
   * Synced from Ubuntu: (Closes: #725284)

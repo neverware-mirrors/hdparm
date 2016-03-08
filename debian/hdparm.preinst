@@ -19,26 +19,4 @@ rm_conffile() {
     fi
 }
 
-if [ "$1" = install ] || [ "$1" = upgrade ]; then
-  if dpkg --compare-versions "$2" le 6.1-6; then
-    if dpkg --compare-versions "$2" gt 6.1-2; then
-      for conffile in /etc/init.d/hdparm.dev /etc/dev.d/block//hdparm.block /etc/dev.d/block/hdparm.dev; do
-        [ ! -e "$conffile" ] || rm_conffile "$conffile"
-      done
-    elif dpkg --compare-versions "$2" lt 5.5-5; then
-      update-rc.d -f hdparm remove > /dev/null 2>&1
-      if dpkg --compare-versions "$2" lt 5.4-6; then
-        [ ! -e /etc/hdparm.conf ] || rm_conffile "/etc/hdparm.conf"
-        if dpkg --compare-versions "$2" ge 5.4-3; then
-          if [ -e /etc/default/hdparm ]; then  
-            echo -n "Moving old /etc/default/hdparm to /etc/hdparm.conf . . "
-            mv /etc/default/hdparm /etc/hdparm.conf
-            echo "done."
-          fi
-        fi
-      fi
-    fi
-  fi
-fi
-
 #DEBHELPER#
