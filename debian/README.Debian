@@ -1,7 +1,16 @@
 hdparm for Debian
   -----------------
+
+By reading this readme, please take into account that it was first written
+in 2005 and present here mostly for history.
+While some parts are still true, one should not set any parameters without
+understanding their potential impact.
+
+ -- Alex Mestiashvili <alex@biotec.tu-dresden.de>  Tue, 08 Mar 2016 12:01:00 +0100
+
+  -----------------
   
-General hard disk tuning:
+General IDE hard disk tuning:
   
   To get the best performance out of your hard drive turn on DMA support
   in the kernel and enable 32bit IO (-c) and multiple sector I/O (-m)
@@ -14,16 +23,16 @@ General hard disk tuning:
   
 Multiple disks with the same options:
   
-  /etc/default/hdparm can take environment variables for simple options 
+  /etc/default/hdparm can take environment variables for simple options
   for a block of disks that are to be set up in the same way.  This would
   be useful for a JBOD type array, or similar arrangement.  Setting up disks
   in this way does not currently integrate with the more complicated checks
   and arrangements that are done with the settings in hdparm.conf.  If you
   need to load modules before tuning a hard disk, or need to allow udev to
-  run before hdparm, do not use this option.  This is intended only for 
+  run before hdparm, do not use this option.  This is intended only for
   disks with normal device nodes, accessible early in the boot process, and
-  with kernel support before module loading.  A complete rewrite is really 
-  needed to better integrate this option.  Hopefully I'll have the time soon 
+  with kernel support before module loading.  A complete rewrite is really
+  needed to better integrate this option.  Hopefully I'll have the time soon
   (or somebody will send the patches :)
   
 APM and ACPI:
@@ -38,7 +47,7 @@ Some problems with udev and module loading:
   hdparm's init script is set to run at /etc/rcS.d/S07 because there have
   been reports of data corruption with mounted disks.  This particular
   placement may not work for you if the ability to use things like DMA
-  relies on having modules for your motherboard or drive loaded, as it is 
+  relies on having modules for your motherboard or drive loaded, as it is
   run before the module loading init script.  If this is the case for you,
   (and you don't use udev) do the following:
   
@@ -57,12 +66,12 @@ Some problems with udev and module loading:
   other defined devices.  This will give the other scripts a chance to
   load modules and create devices.
 
-  hdparm now supports udev created device nodes, using the script 
+  hdparm now supports udev created device nodes, using the script
   /etc/udev/hdparm.rules.  This allows users to set up regular stanzas in
   /etc/hdparm.conf, that will fail the first time (as the device nodes
   don't yet exist) but will be properly set up when udev gets to them.
   
-  If you have devices that consistently come up in different orders (e.g., 
+  If you have devices that consistently come up in different orders (e.g.,
   today's /dev/sda is tomorrow's /dev/sdb), then you can do one of two
   things.  Either you can directly use one of the various /dev/disk/by-*
   symlinks, or you can create a udev rule to create a symlink to your

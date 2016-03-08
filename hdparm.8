@@ -1,4 +1,4 @@
-.TH HDPARM 8 "November 2012" "Version 9.43"
+.TH HDPARM 8 "June 2015" "Version 9.48"
 
 .SH NAME
 hdparm \- get/set SATA/IDE device parameters
@@ -509,7 +509,7 @@ and an unsuccessful outcome may result in
 .TP
 .I -P
 Set the maximum sector count for the drive\'s internal prefetch mechanism.
-Not all drives support this feature, and it was dropped from the offical spec
+Not all drives support this feature, and it was dropped from the official spec
 as of ATA-4.
 .TP
 .I --prefer-ata12
@@ -676,6 +676,9 @@ provides a safe fix for the problem for use with earlier kernels.
 .I -v 
 Display some basic settings, similar to \-acdgkmur for IDE.
 This is also the default behaviour when no options are specified.
+.TP
+.I -V
+Display program version and exit immediately.
 .TP
 .I --verbose 
 Display extra diagnostics from some commands.
