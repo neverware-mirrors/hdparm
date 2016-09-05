@@ -1,9 +1,16 @@
 #!/usr/bin/make -f
 
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+include /usr/share/dpkg/architecture.mk
+ifeq ($(origin CC),default)
+	CC = $(DEB_HOST_GNU_TYPE)-gcc
+endif
 
 %:
 	dh $@
+
+override_dh_auto_build:
+	dh_auto_build -- CC=$(CC) STRIP=:
 
 override_dh_installudev:
 	dh_installudev --priority=85

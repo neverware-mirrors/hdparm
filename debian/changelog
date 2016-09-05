@@ -1,3 +1,15 @@
+hdparm (9.48+ds-2) unstable; urgency=medium
+
+  * Fix typo in the long description, Closes: #818612
+    thanks to Laura Arjona Reina for the patch.
+  * Apply cme fix dpkg, update license name to match license short name
+  * Apply patch from Helmut Grohne, Closes: #836504
+    - Pass triplet-prefixed CC to make
+    - Do not strip during build
+  * Update d/control, fix typo in Vcs-Browser field
+
+ -- Alexandre Mestiashvili <alex@biotec.tu-dresden.de>  Mon, 05 Sep 2016 15:40:42 +0200
+
 hdparm (9.48+ds-1) unstable; urgency=medium
 
   [ Alexandre Mestiashvili ]
