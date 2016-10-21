@@ -2253,6 +2253,7 @@ void process_dev (char *devname)
 	}
 	if (security_freeze) {
 		__u8 args[4] = {ATA_OP_SECURITY_FREEZE_LOCK,0,0,0};
+	if (!quiet)
 		printf(" issuing security freeze command\n");
 		if (do_drive_cmd(fd, args, 0)) {
 			err = errno;
