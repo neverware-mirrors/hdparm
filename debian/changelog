@@ -1,3 +1,11 @@
+hdparm (9.50+ds-1) unstable; urgency=medium
+
+  * New upstream version 9.50+ds
+  * Refresh quiet_sequrity_freeze.patch and update spelling.patch
+  * Update copyright years
+
+ -- Alexandre Mestiashvili <alex@biotec.tu-dresden.de>  Fri, 21 Oct 2016 14:11:37 +0200
+
 hdparm (9.48+ds-2) unstable; urgency=medium
 
   * Fix typo in the long description, Closes: #818612
