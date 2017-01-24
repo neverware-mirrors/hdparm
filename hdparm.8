@@ -1,4 +1,4 @@
-.TH HDPARM 8 "October 2016" "Version 9.50"
+.TH HDPARM 8 "January 2017" "Version 9.51"
 
 .SH NAME
 hdparm \- get/set SATA/IDE device parameters
@@ -778,6 +778,10 @@ The drive does not accept any security commands until next power-on reset.
 Use this function in combination with \--security-unlock to protect drive
 from any attempt to set a new password. Can be used standalone, too.
 No other options are permitted on the command line with this one.
+.TP
+.I --security-prompt-for-password
+Prompt for the --security PWD rather than getting from the command line args.
+This avoids having passwords show up in shell history or in /proc/self/cmdline during execution.
 .TP
 .I --security-unlock PWD 
 Unlock the drive, using password PWD.
