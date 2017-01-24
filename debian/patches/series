@@ -1,3 +1,2 @@
-quiet_sequrity_freeze.patch
-fix_ldflags.patch
-spelling.patch
+quiet_security_freeze.patch
+makefile.patch

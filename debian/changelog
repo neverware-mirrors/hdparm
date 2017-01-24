@@ -1,3 +1,14 @@
+hdparm (9.51+ds-1) unstable; urgency=medium
+
+  * New upstream version 9.51+ds
+  * Bump debhelper version to v10
+  * Refresh and update patches, drop spelling.patch apllied by upstream
+  * Add makefile.patch removing hardcoded "-j4" and LDFALGS,
+    drop fix_ldflags.patch
+  * Drop d/hdparm.preinst as it is substituted by d/hdparm.maintscript
+
+ -- Alexandre Mestiashvili <alex@biotec.tu-dresden.de>  Tue, 24 Jan 2017 12:20:05 +0100
+
 hdparm (9.50+ds-1) unstable; urgency=medium
 
   * New upstream version 9.50+ds

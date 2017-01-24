@@ -1,5 +1,6 @@
 Subject: Remove hardcoded LDFLAGS, this way dh will propagate hardening
-flags correctly
+flags correctly.
+Don't hardcode the number of parallel jobs "-j2"
 From: Alex Mestiashvili <mailatgoogl@gmail.com>
 --- hdparm.orig/Makefile
 +++ hdparm/Makefile
@@ -11,3 +12,12 @@ From: Alex Mestiashvili <mailatgoogl@gmail.com>
  #LDFLAGS = -s -static
  INSTALL = install
  INSTALL_DATA = $(INSTALL) -m 644
+@@ -25,7 +24,7 @@
+ OBJS = hdparm.o identify.o sgio.o sysfs.o geom.o fallocate.o fibmap.o fwdownload.o dvdspeed.o wdidle3.o
+ 
+ all:
+-	$(MAKE) -j4 hdparm
++	make hdparm
+ 
+ hdparm: hdparm.h sgio.h $(OBJS)
+ 	$(CC) $(LDFLAGS) -o hdparm $(OBJS)
