@@ -20,6 +20,10 @@ Copyright: 2008 Mark Lord <mlord@pobox.com>
            2008 EMC Corporation
 License: GPL-2+ or BSD-2-clause
 
+Files: apt.c
+Copyright: 2009 Jan Friesse <jfriesse@gmail.com>
+License: GPL-2+ or BSD-2-clause
+
 Files: wiper/contrib/raid1ext4trim.sh-1.5
 Copyright: 2010-2012 Chris Caputo
 License: GPL-2+

@@ -13,7 +13,7 @@ From: Alex Mestiashvili <mailatgoogl@gmail.com>
  INSTALL = install
  INSTALL_DATA = $(INSTALL) -m 644
 @@ -25,7 +24,7 @@
- OBJS = hdparm.o identify.o sgio.o sysfs.o geom.o fallocate.o fibmap.o fwdownload.o dvdspeed.o wdidle3.o
+ OBJS = hdparm.o identify.o sgio.o sysfs.o geom.o fallocate.o fibmap.o fwdownload.o dvdspeed.o wdidle3.o apt.o
  
  all:
 -	$(MAKE) -j4 hdparm
