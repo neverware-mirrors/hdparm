@@ -2,7 +2,7 @@ Subject: don't print message to sdtout if -q flag is used
 From: Alex Mestiashvili <mailatgoogl@gmail.com>
 --- hdparm.orig/hdparm.c
 +++ hdparm/hdparm.c
-@@ -2261,7 +2261,8 @@
+@@ -2256,7 +2256,8 @@
  	}
  	if (security_freeze) {
  		__u8 args[4] = {ATA_OP_SECURITY_FREEZE_LOCK,0,0,0};
