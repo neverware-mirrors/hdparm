@@ -1,3 +1,12 @@
+hdparm (9.54+ds-1) unstable; urgency=medium
+
+  * New upstream version 9.54+ds
+  * Refresh d/patches/quiet_security_freeze.patch
+  * Update d/hdparm-funtions: Only enable APM on disks that advertise it,
+    patch from dann frazier <dannf@debian.org>, Closes: #891051
+
+ -- Alexandre Mestiashvili <alex@biotec.tu-dresden.de>  Thu, 22 Feb 2018 14:51:46 +0100
+
 hdparm (9.53+ds-1) unstable; urgency=medium
 
   * New upstream version 9.53+ds
