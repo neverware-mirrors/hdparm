@@ -7,24 +7,31 @@ hdparm.conf \- Debian configuration file for hdparm
 .LP
 This is the default configuration for hdparm for Debian.
 It is a rather simple script, so please follow the following guidelines :)
-Any line that begins with a comment is ignored \- add as many as you 
+Any line that begins with a comment is ignored \- add as many as you
 like.
 .LP
-Note that an in\-line comment is not supported.  If a line 
+Since hdparm doesn't use init script anymore, this configuration is mainly used
+by udev.
+Still one can re-apply settings from the config file by calling either
+.LP
+.B /usr/lib/pm-utils/power.d/95hdparm-apm resume
+.LP
+or by calling
+.LP
+.B DEVNAME=/dev/<disk> /lib/udev/hdparm
+.LP
+Note that an in\-line comment is not supported.  If a line
 consists of whitespace only (tabs, spaces, carriage return), it will be
 ignored, so you can space control fields as you like.  ANYTHING ELSE
 IS PARSED!!
 .LP
-This means that lines with stray characters or lines that 
+This means that lines with stray characters or lines that
 use non # comment characters will be interpreted by the initscript.
-This has probably minor, but potentially serious, side effects for your 
+This has probably minor, but potentially serious, side effects for your
 hard drives, so please follow the guidelines.
 Patches to improve flexibilty welcome.
 .LP
-Please read /usr/share/doc/hdparm/README.Debian for 
-notes about known issues, especially if you have an MD array.
-.LP
-Note that if the init script causes boot problems, you can pass 'nohdparm' 
+Note that if the init script causes boot problems, you can pass 'nohdparm'
 on the kernel command line, and the script will not be run.
 .LP
 Setting an option outside of one of the stanzas enables it for all drives.
@@ -49,7 +56,7 @@ outside of a block and all options defined with in the block.
 .SH "OPTIONS"
 .TP
 \fB\-q\fR be quiet
-quiet 
+quiet
 .TP
 \fB\-a\fR sector count for filesystem read-ahead
 read_ahead_sect = 12
@@ -152,7 +159,7 @@ identifier instead so that they will be applied when the device becomes
 available.
 .SH AUTHOR
 hdparm was written by Mark Lord <mlord@pobox.com>
-The init script and configuration file are currently maintained by 
+The init script and configuration file are currently maintained by
 Stephen Gran <sgran@debian.org>, but are the result of the work of many people.
 .PP
 This manual page was created by Stephen Gran <sgran@debian.org>
