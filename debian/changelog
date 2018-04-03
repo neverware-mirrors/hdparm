@@ -1,3 +1,20 @@
+hdparm (9.56+ds-1) unstable; urgency=medium
+
+  [ Alexandre Mestiashvili ]
+  * Update Vcs-* to point to salsa.debian.org
+
+  [ Julien CHATY-CAPELLE ]
+  * Update hdparm.conf man page, hdparm doesn't use init script anymore
+
+  [ Alexandre Mestiashvili ]
+  * New upstream version 9.56+ds
+  * Refresh and forward to upstream quiet_security_freeze.patch
+  * Update maintainer's email in d/control and d/copyright
+  * Update d/hdparm.conf.5, explain how to restart hdparm,
+    strip trailing white spaces. Closes: #874080
+
+ -- Alexandre Mestiashvili <mestia@debian.org>  Tue, 03 Apr 2018 15:02:15 +0200
+
 hdparm (9.54+ds-1) unstable; urgency=medium
 
   * New upstream version 9.54+ds
