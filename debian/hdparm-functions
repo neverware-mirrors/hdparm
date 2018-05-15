@@ -56,7 +56,15 @@ hdparm_try_apm()
             return 1
             ;;
     esac
-    return 0
+
+    # Only activate APM on disks that support it.
+    if [ -z "$ID_ATA_FEATURE_SET_APM" ]; then
+        local ID_ATA_FEATURE_SET_APM="$(udevadm info -n "$1" -q property 2>/dev/null | sed -n 's/^ID_ATA_FEATURE_SET_APM=//p')" || true
+    fi
+    if [ "$ID_ATA_FEATURE_SET_APM" = "1" ]; then
+        return 0
+    fi
+    return 1
 }
 
 # parse /etc/hdparm.conf and spit out a list of options for the specified
