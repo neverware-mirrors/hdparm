@@ -19,80 +19,85 @@ if ([ "$previous" ] && [ "$runlevel" ]) || [ "$runlevel" = S ]; then
     exit 0
 fi
 
-if [ -e /usr/sbin/laptop_mode ] ; then 
-	LMT_CONTROL_HD_POWERMGMT=$(. /etc/laptop-mode/laptop-mode.conf && echo "$CONTROL_HD_POWERMGMT")
-	if [ "$LMT_CONTROL_HD_POWERMGMT" != 0 ] \
-	   && [ -e /var/run/laptop-mode-tools/enabled ]
-	then
-		# Laptop mode controls hdparm -B settings, we don't.
-		exit 0
-	fi
+if [ -e /usr/sbin/laptop_mode ] ; then
+    LMT_CONTROL_HD_POWERMGMT=$(. /etc/laptop-mode/laptop-mode.conf && echo "$CONTROL_HD_POWERMGMT")
+    if [ "$LMT_CONTROL_HD_POWERMGMT" != 0 ] \
+       && [ -e /var/run/laptop-mode-tools/enabled ]
+    then
+        # Laptop mode controls hdparm -B settings, we don't.
+        exit 0
+    fi
 fi
 
 . /lib/hdparm/hdparm-functions
 
 resume_hdparm_apm()
 {
-	for dev in /dev/sd? /dev/hd? ; do
-		apm_opt=
-		if [ -b $dev ] && hdparm_try_apm $dev ; then
-			# Check for APM support; discard errors since not all
-			# drives support HDIO_GET_IDENTITY (-i).
-			if hdparm -i $dev 2> /dev/null | grep -q 'AdvancedPM=yes'
-			then
-				for option in $(hdparm_options $dev); do
-					case $option in
-						-B*)
-							apm_opt=$option
-							;;
-						*)
-							;;
-					esac
-				done
-				if [ -n "$apm_opt" ]; then
-					hdparm $apm_opt $dev
-				fi
-			fi
-		fi
-	done
+    for dev in /dev/sd? /dev/hd? ; do
+        apm_opt=
+        if [ -b $dev ] && hdparm_try_apm $dev ; then
+            for option in $(hdparm_options $dev); do
+                case $option in
+                    -B*)
+                        apm_opt=$option
+                        ;;
+                    *)
+                        ;;
+                esac
+            done
+            if [ -n "$apm_opt" ]; then
+                hdparm $apm_opt $dev
+            fi
+        fi
+    done
 }
 
 resume_hdparm_spindown()
 {
-	for dev in /dev/sd? /dev/hd? ; do
-		apm_opt=
-		if [ -b $dev ] && hdparm_try_apm $dev ; then
-			# Check for APM support; discard errors since not all
-			# drives support HDIO_GET_IDENTITY (-i).
-			if hdparm -i $dev 2> /dev/null | grep -q 'AdvancedPM=yes'
-			then
-				for option in $(hdparm_options $dev); do
-					case $option in
-						-S*)
-							apm_opt=$option
-							;;
-						*)
-							;;
-					esac
-				done
-				if [ -n "$apm_opt" ]; then
-					hdparm $apm_opt $dev
-				fi
-			fi
-		fi
-	done
+    for dev in /dev/sd? /dev/hd? ; do
+        # Check for force_spindown_time option
+        # If defined apply hdaprm -S even if APM is not supported
+        # See also #758988
+        ignore_apm=
+        options=$(hdparm_options $dev)
+        case $options in
+            (*'force_spindown_time'*)
+                ignore_apm='true'
+                ;;
+        esac
+        apm_opt=
+        if [ -b $dev ]; then
+            if hdparm_try_apm $dev || [ "$ignore_apm" = true ] ; then
+                for option in $(hdparm_options $dev); do
+                    # Convert manually introduced option "force_spindown_time"
+                    # back to "-S" understandable by hdparm
+                    option=$(echo $option| sed 's/force_spindown_time/-S/')
+                    case $option in
+                        -S*)
+                            apm_opt=$option
+                            ;;
+                        *)
+                            ;;
+                    esac
+                done
+                if [ -n "$apm_opt" ]; then
+                    hdparm $apm_opt $dev
+                fi
+            fi
+        fi
+    done
 }
 
 case "$1" in
-	true|false) # powersaving on/off
-		resume_hdparm_apm
-		;;
-	thaw|resume)
-		resume_hdparm_apm
-		# only set the -S option on resuming, not necessary for power.d
-		resume_hdparm_spindown
-		;;
-	*)
-		exit 254
-		;;
+    true|false) # powersaving on/off
+        resume_hdparm_apm
+        ;;
+    thaw|resume)
+        resume_hdparm_apm
+        # only set the -S option on resuming, not necessary for power.d
+        resume_hdparm_spindown
+        ;;
+    *)
+        exit 254
+        ;;
 esac

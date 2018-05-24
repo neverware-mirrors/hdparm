@@ -1,3 +1,14 @@
+hdparm (9.56+ds-2) unstable; urgency=medium
+
+  * Introduce option "force_spindown_time" to forcibly set spindown (-S) option
+    on disk not supporting APM, Closes: #758988
+  * Update man page d/hdparm.conf.5 and default config file hdparm.conf
+  * Substitute tabs with spaces in d/{hdparm-functions,95hdparm-apm}
+  * Drop duplicated check for AdvancedPM, hdparm_try_apm() should be sufficient
+  * Bump Policy version to 4.1.4
+
+ -- Alexandre Mestiashvili <mestia@debian.org>  Thu, 24 May 2018 21:14:07 +0200
+
 hdparm (9.56+ds-1) unstable; urgency=medium
 
   [ Alexandre Mestiashvili ]
