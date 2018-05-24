@@ -88,10 +88,10 @@ hdparm_options()
         if hdparm_try_apm "$WANTED_DISK"; then
             if hdparm_is_on_battery; then
                 hdparm_set_option -B128
-		# set a spindown time of 3 minutes by default so the disk isn't
-		# constantly power cycling on a busy machine if spindown is
-		# enabled
-		hdparm_set_option -S36
+        # set a spindown time of 3 minutes by default so the disk isn't
+        # constantly power cycling on a busy machine if spindown is
+        # enabled
+        hdparm_set_option -S36
             else
                 hdparm_set_option -B254
             fi
@@ -167,6 +167,9 @@ hdparm_options()
                             ;;
                         spindown_time)
                             hdparm_set_option -S$VALUE
+                            ;;
+                        force_spindown_time)
+                            hdparm_set_option force_spindown_time$VALUE
                             ;;
                         poweron_standby)
                             hdparm_eval_value $VALUE -s
