@@ -3,7 +3,7 @@ Maintainer: Alexandre Mestiashvili <mestia@debian.org>
 Section: admin
 Priority: optional
 Build-Depends: debhelper (>= 11)
-Standards-Version: 4.1.4
+Standards-Version: 4.2.1
 Vcs-Browser: https://salsa.debian.org/debian/hdparm
 Vcs-Git: https://salsa.debian.org/debian/hdparm.git
 Homepage: http://sourceforge.net/projects/hdparm/
