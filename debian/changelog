@@ -1,3 +1,9 @@
+hdparm (9.58+ds-1) unstable; urgency=medium
+
+  * New upstream version 9.58+ds, Closes: #911826
+
+ -- Alexandre Mestiashvili <mestia@debian.org>  Fri, 26 Oct 2018 13:53:55 +0000
+
 hdparm (9.57+ds-1) unstable; urgency=medium
 
   [ Ondřej Nový ]
