@@ -1,3 +1,22 @@
+hdparm (9.58+ds-3) unstable; urgency=medium
+
+  * Remove connfile /etc/apm/event.d/20hdparm on upgrade, Closes: #932308
+    Thanks to Laurent Bigonville
+  * Update d/control, remove apmd from Suggests
+
+ -- Alexandre Mestiashvili <mestia@debian.org>  Wed, 17 Jul 2019 16:07:16 +0200
+
+hdparm (9.58+ds-2) unstable; urgency=medium
+
+  * Drop d/20hdparm script, as APM seem to be almost dead
+  * Update d/udev-scripts/hdparm, call pm-utils 95hdparm-apm helper
+    for APM options
+  * Update d/README.Debian, drop obsoleted information, describe defaults for
+    hdparm 9.58+ds-2
+  * Bump Polciy to 4.4.0
+
+ -- Alexandre Mestiashvili <mestia@debian.org>  Tue, 16 Jul 2019 18:23:16 +0200
+
 hdparm (9.58+ds-1) unstable; urgency=medium
 
   * New upstream version 9.58+ds, Closes: #911826

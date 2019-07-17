@@ -1,5 +1,4 @@
 debian/hdparm.conf	etc/
-debian/20hdparm		etc/apm/event.d/
 debian/hdparm-functions lib/hdparm/
 debian/95hdparm-apm	usr/lib/pm-utils/power.d/
 debian/tmp/sbin/hdparm
