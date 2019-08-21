@@ -15,7 +15,6 @@ STRIP ?= strip
 
 CFLAGS := -O2 -W -Wall -Wbad-function-cast -Wcast-align -Wpointer-arith -Wcast-qual -Wshadow -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -fkeep-inline-functions -Wwrite-strings -Waggregate-return -Wnested-externs -Wtrigraphs $(CFLAGS)
 
-LDFLAGS = -s
 #LDFLAGS = -s -static
 INSTALL = install
 INSTALL_DATA = $(INSTALL) -m 644
@@ -25,7 +24,7 @@ INSTALL_PROGRAM = $(INSTALL)
 OBJS = hdparm.o identify.o sgio.o sysfs.o geom.o fallocate.o fibmap.o fwdownload.o dvdspeed.o wdidle3.o apt.o
 
 all:
-	$(MAKE) -j4 hdparm
+	make hdparm
 
 hdparm: hdparm.h sgio.h $(OBJS)
 	$(CC) $(LDFLAGS) -o hdparm $(OBJS)
