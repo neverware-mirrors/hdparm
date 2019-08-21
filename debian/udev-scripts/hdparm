@@ -39,9 +39,9 @@ if [ -n "$OPTIONS" ]; then
         if [ "$apmopts" = true ]; then
                 /usr/lib/pm-utils/power.d/95hdparm-apm resume
         fi
-        # strip -S (spindown) and -B (apm), force_spindown_time, -q and empty white spaces
+        # strip -S (spindown) and -B (apm), force_spindown_time and -q
         # apm options are handled by /usr/lib/pm-utils/power.d/95hdparm-apm
-        OPTIONS=$(echo $OPTIONS | perl -pe 's/((-S|-B|force_spindown_time)[\d]{1,3})|(-q\s?)|(\s?)//g')
+        OPTIONS=$(echo $OPTIONS | perl -pe 's/((-S|-B|force_spindown_time)[\d]{1,3})|(-q\s?)//g')
         if [ -n "$OPTIONS" ]; then
                 /sbin/hdparm -q $OPTIONS $DEVNAME 2>/dev/null
         fi

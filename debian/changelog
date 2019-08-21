@@ -1,3 +1,9 @@
+hdparm (9.58+ds-4) unstable; urgency=medium
+
+  * Fix option parsing in hdparm udev script, Closes: #934051
+
+ -- Alexandre Mestiashvili <mestia@debian.org>  Wed, 21 Aug 2019 14:36:14 +0200
+
 hdparm (9.58+ds-3) unstable; urgency=medium
 
   * Remove connfile /etc/apm/event.d/20hdparm on upgrade, Closes: #932308
