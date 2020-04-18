@@ -34,13 +34,23 @@ hdparm.o:	hdparm.h sgio.h
 
 identify.o:	hdparm.h
 
-dvdspeed.o:     dvdspeed.c
+dvdspeed.o:     dvdspeed.c hdparm.h
 
 sgio.o: sgio.c sgio.h hdparm.h
 
 fwdownload.o: fwdownload.c sgio.h hdparm.h
 
-apt.o:		apt.c
+apt.o:		apt.c hdparm.h sgio.h
+
+wdidle3.o:	hdparm.h sgio.h
+
+sysfs.o:	hdparm.h
+
+geom.o:		hdparm.h
+
+fallocate.o:	hdparm.h
+
+fibmap.o:	hdparm.h
 
 install: all hdparm.8
 	if [ ! -z $(DESTDIR) ]; then $(INSTALL_DIR) $(DESTDIR) ; fi
