@@ -1,3 +1,12 @@
+hdparm (9.58+ds-5) unstable; urgency=medium
+
+  [ Alexandre Mestiashvili ]
+  * Add patch 0001-Fix-faults-in-Makefile.patch, thanks to Stefanos Chaliasos
+  * Improve docs in hdparm.conf
+  * Apply cme fix dpkg, bump Policy and debhelper version
+
+ -- Alexandre Mestiashvili <mestia@debian.org>  Sat, 18 Apr 2020 21:08:16 +0200
+
 hdparm (9.58+ds-4) unstable; urgency=medium
 
   * Fix option parsing in hdparm udev script, Closes: #934051
