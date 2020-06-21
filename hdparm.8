@@ -1,4 +1,4 @@
-.TH HDPARM 8 "January 2004" "Version 5.5"
+.TH HDPARM 8 "November 2004" "Version 5.8"
 
 .SH NAME
 hdparm \- get/set hard disk parameters
@@ -29,6 +29,11 @@ which alleviates the need for a filesystem read-ahead in many situations.
 .TP
 .I -A
 Disable/enable the IDE drive's read-lookahead feature (usually ON by default).
+Usage:
+.B -A0
+(disable) or
+.B -A1
+(enable).
 .TP
 .I -b
 Get/set bus state.
@@ -137,17 +142,30 @@ Request identification info directly from the drive,
 which is displayed in a new expanded format with considerably
 more detail than with the older
 .I -i
-flag.  There is a special "no seatbelts" variation on this option,
-.B -Istdin
-which cannot be combined with any other options, and
+flag.
+.TP
+.I -Istdin
+This is a special "no seatbelts" variation on the
+.B -I
+option,
 which accepts a drive identification block as standard input
 instead of using a /dev/hd* parameter.
 The format of this block must be
 .I exactly
-the same as that found in the /proc/ide/*/hd*/identify "files".
-This variation is designed for use with "libraries" of drive
+the same as that found in the /proc/ide/*/hd*/identify "files",
+or that produced by the
+.B -Istdout
+option described below.
+This variation is designed for use with collected "libraries" of drive
 identification information, and can also be used on ATAPI
 drives which may give media errors with the standard mechanism.
+.TP
+.I -Istdout
+This option simply dumps the identify data in hex to stdout,
+in a format similar to that from /proc/, and suitable for
+later use with the
+.I -Istdin
+option.
 .TP
 .I -k
 Get/set the keep_settings_over_reset flag for the drive.
@@ -247,7 +265,7 @@ Not all drives support this feature.
 .TP
 .I -q
 Handle the next flag quietly, suppressing normal output.  This is useful
-for reducing screen clutter when running from /etc/rc.d/rc.local.
+for reducing screen clutter when running from system startup scripts.
 Not applicable to the
 .I -i
 or
@@ -264,8 +282,7 @@ This only works with the newer 2.5.xx (or later) kernels, and only with
 the few drives that currently support it.
 .TP
 .I -r
-Get/set read-only flag for device.  When set, write operations are not
-permitted on the device.
+Get/set read-only flag for the device.  When set, Linux disallows write operations on the device.
 .TP
 .I -R
 Register an IDE interface.

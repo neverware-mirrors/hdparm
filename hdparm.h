@@ -11,9 +11,9 @@
    others, though, were declared in hdparm.c with global scope; since other
    functions in that file have static (file) scope, I assume the difference is
    intentional. */
-extern void identify (__u16 *id_supplied, const char *devname) __attribute__((noreturn));
+extern void identify (__u16 *id_supplied, const char *devname);
 
-extern void usage_error(void)    __attribute__((noreturn));
+extern void usage_error(int out)    __attribute__((noreturn));
 extern int main(int argc, char **argv) __attribute__((noreturn));
 extern void flush_buffer_cache (int fd);
 extern int seek_to_zero (int fd);
