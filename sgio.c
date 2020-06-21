@@ -20,7 +20,7 @@
 extern int verbose;
 extern int prefer_ata12;
 
-static const int default_timeout_secs = 15;
+static const unsigned int default_timeout_secs = 15;
 
 /*
  * Taskfile layout for SG_ATA_16 cdb:
@@ -95,6 +95,8 @@ static inline int needs_lba48 (__u8 ata_op, __u64 lba, unsigned int nsect)
 			return 1;
 		case ATA_OP_SECURITY_ERASE_PREPARE:
 		case ATA_OP_SECURITY_ERASE_UNIT:
+		case ATA_OP_VENDOR_SPECIFIC_0x80:
+		case ATA_OP_SMART:
 			return 0;
 	}
 	if (lba >= lba28_limit)
