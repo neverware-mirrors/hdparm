@@ -99,6 +99,7 @@
 #define LENGTH_MEDIA            20  /* 20 words (40 bytes or characters)*/
 #define START_MANUF             196 /* media manufacturer I.D. */
 #define LENGTH_MANUF            10  /* 10 words (20 bytes or characters) */
+#define SCT_SUPP		206 /* SMART command transport (SCT) support */
 #define TRANSPORT_MAJOR		222 /* PATA vs. SATA etc.. */
 #define TRANSPORT_MINOR		223 /* minor revision number */
 #define INTEGRITY		255 /* integrity word */
@@ -272,11 +273,11 @@ const char *minor_str[MINOR_MAX+2] = {			/* word 81 value: */
 	"ATA/ATAPI-6 T13 1410D revision 1",		/* 0x001c	*/
 	"ATA/ATAPI-7 published, ANSI INCITS 397-2005",	/* 0x001d	*/
 	"ATA/ATAPI-7 T13 1532D revision 0",		/* 0x001e	*/
-	"Reserved"					/* 0x001f	*/
-	"Reserved"					/* 0x0020	*/
+	"Reserved",					/* 0x001f	*/
+	"Reserved",					/* 0x0020	*/
 	"ATA/ATAPI-7 T13 1532D revision 4a",		/* 0x0021	*/
 	"ATA/ATAPI-6 published, ANSI INCITS 361-2002",	/* 0x0022	*/
-	"Reserved"					/* 0x0023-0xfffe*/
+	"Reserved",					/* 0x0023-0xfffe*/
 };
 const char actual_ver[MINOR_MAX+2] = { 
 			/* word 81 value: */
@@ -479,6 +480,26 @@ const char *secu_str[] = {
 #define PWR_MODE_OFF		0x1000  /* 1=CFA power moded disabled */
 #define MAX_AMPS		0x0fff  /* value = max current in ma */
 
+/* word 206: SMART command transport (SCT) */
+static const char *feat_sct_str[16] = {
+	"unknown 206[15]",				/* word 206 bit 15 */
+	"unknown 206[14]",				/* word 206 bit 14 */
+	"unknown 206[13]",				/* word 206 bit 13 */
+	"unknown 206[12]",				/* word 206 bit 12 */
+	"unknown 206[11]",				/* word 206 bit 11 */
+	"unknown 206[10]",				/* word 206 bit 10 */
+	"unknown 206[9]",				/* word 206 bit  9 */
+	"unknown 206[8]",				/* word 206 bit  8 */
+	"unknown 206[7]",				/* word 206 bit  7 */
+	"unknown 206[6]",				/* word 206 bit  6 */
+	"SCT Data Tables (AC5)",			/* word 206 bit  5 */
+	"SCT Features Control (AC4)",			/* word 206 bit  4 */
+	"SCT Error Recovery Control (AC3)",		/* word 206 bit  3 */
+	"SCT LBA Segment Access (AC2)",			/* word 206 bit  2 */
+	"SCT Long Sector Access (AC1)",			/* word 206 bit  1 */
+	"SMART Command Transport (SCT) feature set"	/* word 206 bit  0 */
+};
+
 /* word 255: integrity */
 #define SIG			0x00ff  /* signature location */
 #define SIG_VAL			0x00A5  /* signature value */
@@ -559,11 +580,9 @@ static int print_transport_type(__u16 major, __u16 minor)
 }
 
 /* our main() routine: */
-void identify (__u16 *id_supplied, const char *devname)
+void identify (__u16 *id_supplied)
 {
 
-	char *id_file = NULL, fmt[]="/proc/ide/%s/identify";
-	FILE *fl;
 	__u16 val[256], ii, jj, kk;
 	__u16 like_std = 1, std = 0, min_std = 0xffff;
 	__u16 dev = NO_DEV, eqpt = NO_DEV;
@@ -573,33 +592,12 @@ void identify (__u16 *id_supplied, const char *devname)
 	__u64 bb, bbbig; /* (:) */
 	int transport;
 
-	if (id_supplied) {
-		memcpy(val, id_supplied, sizeof(val));
-	} else {
-		id_file = calloc(1, strlen(devname)+1+strlen(fmt));
-		sprintf(id_file, fmt, devname);
+	memcpy(val, id_supplied, sizeof(val));
 
-		/* open the file, read in all the info and close it */
-		if (id_file == NULL) {
-			fl = stdin;
-		} else if(NULL == (fl = fopen(id_file, "r"))) {
-     			perror(id_file);
-			exit(errno);
-		}
-		/* calculate checksum over all bytes */
-		for(ii = GEN_CONFIG; ii<=INTEGRITY; ii++) {
-			unsigned int scratch;
-			if(1 != fscanf(fl,"%04x",&scratch)) break;
-			val[ii] = (__u16)scratch;
-			chksum += val[ii] + (val[ii] >> 8);
-		}
-		fclose(fl);  
-		if(ii < (INTEGRITY+1)) {
-			fprintf(stderr,"Input file wrong format or length\n");
-			exit(ii);
-		}
+	/* calculate checksum over all bytes */
+	for(ii = GEN_CONFIG; ii<=INTEGRITY; ii++) {
+		chksum += val[ii] + (val[ii] >> 8);
 	}
-	chksum &= 0xff;
 
 	/* check if we recognise the device type */
 	printf("\n");
@@ -1039,6 +1037,8 @@ void identify (__u16 *id_supplied, const char *devname)
 			print_features(val[SATA_CAP_0],  val[SATA_CAP_0], cap_sata0_str);
 		if (transport == 1 || (val[SATA_SUPP_0] && val[SATA_SUPP_0] != 0xffff))
 			print_features(val[SATA_SUPP_0], val[SATA_EN_0], feat_sata0_str);
+		if (val[SCT_SUPP] & 0x1)
+			print_features(val[SCT_SUPP], val[SCT_SUPP] & 0x3f, feat_sct_str);
 	}
 	if((val[RM_STAT] & RM_STAT_BITS) == RM_STAT_SUP) 
 		printf("\tRemovable Media Status Notification feature set supported\n");
@@ -1106,9 +1106,13 @@ void identify (__u16 *id_supplied, const char *devname)
 				printf("\tMaximum current = %uma\n",val[CFA_PWR_MODE] & MAX_AMPS);
 		}
 		if((val[INTEGRITY] & SIG) == SIG_VAL) {
-			printf("Checksum: ");
-			if(chksum) printf("in");
-			printf("correct\n");
+			printf("Checksum: %scorrect", chksum ? "in" : "");
+			if (chksum)
+				printf(" (0x%02x), expected 0x%02x\n", chksum, 0x100 - chksum);
+			putchar('\n');
+		} else {
+			printf("\tIntegrity word not set (found 0x%04x, expected 0x%02x%02x)\n",
+				val[INTEGRITY], 0x100 - chksum, SIG_VAL);
 		}
 	}
 }
